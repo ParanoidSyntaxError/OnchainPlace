@@ -1,0 +1,147 @@
+<html>
+    <head>
+        <title>onchain.place</title>
+        <link rel="stylesheet" type="text/css" href="stylesheet.css">
+    </head>
+    <body style="background-color: lightsteelblue;">
+        <div style="text-align: right;">
+            <button class="button" style="background-color:grey;"  id="btn-connect">Connect</button>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 15px;">
+            <button class="button" style="background-color: blue; margin: 0px 5px;" id="btn-refreshplace">Refresh</button>
+            <button class="button" style="background-color: grey; margin: 0px 5px;" id="btn-resetzoom">Reset Zoom</button>
+            <button class="button" style="background-color: grey; margin-left: 5px; margin-right: 10px;" id="btn-center">Center</button>
+            <input class="input-number" id="input-offsetx" type="number" placeholder="X" min="0" max="984"/>
+            <input class="input-number" id="input-offsety" type="number" placeholder="Y" min="0" max="984"/>
+            <button class="button" style="background-color: blue;" id="btn-mint">Mint</button>
+        </div>
+
+        <div class="canvas-parent" style="margin-bottom: 15px;">
+            <canvas id="canvas-hidden" hidden></canvas>
+            <canvas id="canvas-data" hidden></canvas>
+            <canvas id="canvas-view" class="canvas-place"></canvas>
+        </div>
+
+        <div class="radio-toolbar">
+            <input class="radio-input" type="radio" id="color0" name="colors" value="0">
+            <label class="radio-label" for="color0">
+                <div class="radio-square" style="background-color:#ffffff;"></div>
+                <div class="radio-text">FFFFFF</div>
+            </label>
+
+            <input type="radio" id="color1" name="colors" value="1">
+            <label class="radio-label" for="color1">
+                <div class="radio-square" style="background-color:#e4e4e4;"></div>
+                <div class="radio-text">E4E4E4</div>
+            </label>
+
+            <input type="radio" id="color2" name="colors" value="2">
+            <label class="radio-label" for="color2">
+                <div class="radio-square" style="background-color:#888888;"></div>
+                <div class="radio-text">888888</div>
+            </label>
+            
+            <input type="radio" id="color3" name="colors" value="3">
+            <label class="radio-label" for="color3">
+                <div class="radio-square" style="background-color:#222222;"></div>
+                <div class="radio-text">222222</div>
+            </label>
+
+            <input type="radio" id="color4" name="colors" value="4">
+            <label class="radio-label" for="color4">
+                <div class="radio-square" style="background-color:#ffa7d1;"></div>
+                <div class="radio-text">FFA7D1</div>
+            </label>
+            
+            <input type="radio" id="color5" name="colors" value="5">
+            <label class="radio-label" for="color5">
+                <div class="radio-square" style="background-color:#e50000;"></div>
+                <div class="radio-text">E50000</div>
+            </label>
+            
+            <input type="radio" id="color6" name="colors" value="6">
+            <label class="radio-label" for="color6">
+                <div class="radio-square" style="background-color:#e59500;"></div>
+                <div class="radio-text">E59500</div>
+            </label>
+
+            <input type="radio" id="color7" name="colors" value="7">
+            <label class="radio-label" for="color7">
+                <div class="radio-square" style="background-color:#a06a42;"></div>
+                <div class="radio-text">A06A42</div>
+            </label>
+        
+            <input type="radio" id="color8" name="colors" value="8">
+            <label class="radio-label" for="color8">
+                <div class="radio-square" style="background-color:#e5d900;"></div>
+                <span class="radio-text">E5D900</span>
+            </label>
+
+            <input type="radio" id="color9" name="colors" value="9">
+            <label class="radio-label" for="color9">
+                <div class="radio-square" style="background-color:#94e044;"></div>
+                <div class="radio-text">94E044</div>
+            </label>
+
+            <input type="radio" id="color10" name="colors" value="10">
+            <label class="radio-label" for="color10">
+                <div class="radio-square" style="background-color:#02be01;"></div>
+                <div class="radio-text">02BE01</div>
+            </label>
+
+            <input type="radio" id="color11" name="colors" value="11">
+            <label class="radio-label" for="color11">
+                <div class="radio-square" style="background-color:#00d3dd;"></div>
+                <div class="radio-text">00D3DD</div>
+            </label>
+
+            <input type="radio" id="color12" name="colors" value="12">
+            <label class="radio-label" for="color12">
+                <div class="radio-square" style="background-color:#0083c7;"></div>
+                <div class="radio-text">0083C7</div>
+            </label>
+
+            <input type="radio" id="color13" name="colors" value="13">
+            <label class="radio-label" for="color13">
+                <div class="radio-square" style="background-color:#0000ea;"></div>
+                <div class="radio-text">0000EA</div>
+            </label>
+
+            <input type="radio" id="color14" name="colors" value="14">
+            <label class="radio-label" for="color14">
+                <div class="radio-square" style="background-color:#cf6ee4;"></div>
+                <div class="radio-text">CF6EE4</div>
+            </label>
+
+            <input type="radio" id="color15" name="colors" value="15">
+            <label class="radio-label" for="color15">
+                <div class="radio-square" style="background-color:#820080;"></div>
+                <div class="radio-text">820080</div>
+            </label>
+        </div>
+
+        <div style="text-align: center; margin-top: 10px;">
+            <input class="input-number" id="input-x" type="number" placeholder="X" min="0" max="999"/>
+            <input class="input-number" id="input-y" type="number" placeholder="Y" min="0" max="999"/>
+            <button class="button" style="background-color: blue;" id="btn-setpixel">Set Pixel</button>
+        </div>
+
+        <div id="modal-saveas" class="modal">
+            <div class="modal-content">
+                <h id="modal-close" class="close">&times;</h>
+                <div class="modal-header">
+                    <h>UNAUTHORIZED SAVE AS!</h>
+                </div>
+                <div class="modal-body">
+                    <p>Stealing NFT’s is a crime, offenders will be prosecuted</p>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script type="text/javascript" src="ethers-5.6.umd.min.js"></script>    
+    <script type="text/javascript" src="placecanvas.js"></script>
+    <script type="text/javascript" src="saveasmodal.js"></script>
+    <script type="text/javascript" src="web3handler.js"></script>
+</html>

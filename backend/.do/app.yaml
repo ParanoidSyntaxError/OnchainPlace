@@ -1,0 +1,8 @@
+name: onchainplace-app
+services:
+- environment_slug: node-js
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: ParanoidSyntaxError/onchainplace-backedby
+  name: onchainplace-backedby

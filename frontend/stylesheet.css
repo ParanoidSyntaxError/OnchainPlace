@@ -1,0 +1,148 @@
+.button {
+    border: 2px solid white;
+    box-shadow: 2px 2px 0px black;
+    color: white;
+    width: fit-content;
+    font-size: 16px;
+    font-family: 'System', monospace;
+}
+.button:enabled:hover {
+    filter: brightness(0.9);
+}
+.button:enabled:active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+}
+
+.canvas-parent {
+    width: 80vh;
+    height: 80vh;
+    display: flex;
+    text-align: center;
+    margin: 0 auto;
+    justify-content: center;
+}
+.canvas-place {
+    background-color: white;
+    image-rendering: pixelated;
+    border: 2px solid darkgrey;
+    box-shadow: 2px 2px 0px black;
+}
+
+.radio-toolbar {
+    text-align: center;
+    margin: 0px auto;
+    max-width: 750px;
+}
+.radio-toolbar input[type="radio"]:checked + label {
+    background-color: grey;
+}
+.radio-toolbar input[type="radio"] {
+    opacity: 0;
+    width: 0;
+    margin: 0px auto;
+    position: absolute;
+}
+.radio-label {
+    display: inline-block;
+    border: 2px solid white;
+    background-color: lightgrey;
+    box-shadow: 2px 2px 0px black;
+    width: 75px;
+    vertical-align: top;
+    margin: 2px 1px;
+}
+.radio-label:hover {
+    filter: brightness(0.9);
+}
+.radio-label:active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+}
+.radio-square {
+    display: inline-block;
+    vertical-align:middle;
+    border: 2px solid black;
+    width: 10px; 
+    height: 10px; 
+}
+.radio-text {
+    display: inline-block;
+    vertical-align:top;
+    font-family: 'System',monospace; 
+    font-size: 16px; 
+    color: black; 
+}
+
+
+.input-number {
+    font-family: 'System',monospace;
+    font-size: 16px; 
+    background-color: white;
+    border: 2px solid darkgrey;
+    box-shadow: 2px 2px 0px black;
+}
+.input-number:focus {
+    outline: none;
+}
+
+.modal-header {
+    padding: 10px 16px; 
+    font-size: xx-large;
+    font-family: 'System', monospace;
+
+}
+.modal-body {
+    padding: 2px 16px; 
+    font-size: large;
+    font-family: 'System', monospace;
+}
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+.modal-content {
+    position: relative;
+    margin: auto;
+    color: white;
+    background-color: red;
+    border: 2px solid white;
+    width: 600px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+@-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0;} 
+    to {top:0; opacity:1;}
+}
+
+@keyframes animatetop {
+    from {top:-300px; opacity:0;}
+    to {top:0; opacity:1;}
+}
+
+.close {
+    padding: 0px 8px; 
+    color: black;
+    float: right;
+    font-size: 32px;
+    font-weight: bolder;
+}
+.close:hover,
+.close:focus {
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
