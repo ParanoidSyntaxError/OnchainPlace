@@ -3,7 +3,6 @@ __pycache__
 .history
 .hypothesis/
 node_modules
-
 brownie/build/
 brownie/reports/
 brownie/interfaces/

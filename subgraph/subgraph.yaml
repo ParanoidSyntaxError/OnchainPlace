@@ -1,0 +1,27 @@
+specVersion: 0.0.4
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Contract
+    network: mumbai
+    source:
+      address: "0xBCB77f974b9956f58380870c9e35a443507FE655"
+      abi: Contract
+      startBlock: 28196475
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - PixelSet
+        - Mint
+      abis:
+        - name: Contract
+          file: ./abis/Contract.json
+      eventHandlers:
+        - event: PixelSet(indexed address,uint256,uint256,uint256)
+          handler: handlePixelSet
+        - event: Mint(indexed address,uint256,uint256)
+          handler: handleMint
+      file: ./src/contract.ts

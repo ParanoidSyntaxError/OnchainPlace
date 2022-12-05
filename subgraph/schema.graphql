@@ -1,0 +1,20 @@
+type Change @entity(immutable: true) {
+  id: ID!
+  author: Bytes!
+  position: BigInt!
+  color: BigInt!
+  totalChanges: BigInt!
+}
+
+type Pixel @entity {
+  id: ID!
+  position: BigInt!
+  color: BigInt!
+  totalChanges: BigInt!
+}
+
+type Token @entity(immutable: true) {
+  id: ID!
+  owner: Bytes!
+  totalChanges: BigInt!
+}
