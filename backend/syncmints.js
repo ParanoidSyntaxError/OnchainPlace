@@ -55,8 +55,6 @@ async function checkMints() {
         }
     }
 
-    console.log(missingMints);
-
     for(let m = 0; m < missingMints.length; m++) {
         let mint = emptyMint;
 
@@ -65,8 +63,6 @@ async function checkMints() {
         mint["owner"] = mintData["owner"];
         mint["totalChanges"] = mintData["totalChanges"];
       
-        console.log("building")
-
         for(let p = 0; p < 200; p++) {
             let promises = [];
     
@@ -87,9 +83,6 @@ async function checkMints() {
                 }
             }
         }
-
-        console.log("built!")
-
         await updateMintedPlace(mint, "place_" + missingMints[m] + ".json");
     }
 }
