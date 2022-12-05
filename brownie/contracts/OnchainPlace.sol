@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import "./token/ERC721.sol";
-import "./utils/ParsingHelper.sol";
-import "./interfaces/IOnchainPlace.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract OnchainPlace is IOnchainPlace, ERC721, ParsingHelper {
+import "./interfaces/IOnchainPlace.sol";
+import "./Parser.sol";
+
+contract OnchainPlace is IOnchainPlace, ERC721, Ownable {
     event PixelSet (
         address indexed author,
         uint256 position,
@@ -17,6 +20,12 @@ contract OnchainPlace is IOnchainPlace, ERC721, ParsingHelper {
         address indexed owner,
         uint256 id,
         uint256 totalChanges
+    );
+
+    event Withdraw (
+        address indexed receiver,
+        address indexed token,
+        uint256 amount
     );
 
     uint256 internal constant PLACE_WIDTH = 1000;
@@ -52,18 +61,6 @@ contract OnchainPlace is IOnchainPlace, ERC721, ParsingHelper {
         _mint(0);
     }
 
-    function mintFee() external pure override returns (uint256) {
-        return MINT_FEE;
-    }
-
-    function totalSupply() external view override returns (uint256) {
-        return _totalSupply;
-    }
-
-    function totalChanges() external view override returns (uint256) {
-        return _totalChanges;
-    }
-
     function setPixel(uint256 position, uint256 color) external override {
         require(position < PLACE_AREA);
         require(color <= MAX_COLOR);
@@ -77,25 +74,6 @@ contract OnchainPlace is IOnchainPlace, ERC721, ParsingHelper {
 
     function mint(uint256 offset) external payable override {
         _mint(offset);
-    }
-
-    function tokenURI(uint256 id) public view override returns (string memory) {
-        require(id < _totalSupply);
-
-        return string(abi.encodePacked(
-            "data:application/json;base64,",
-            _encode(abi.encodePacked(
-                '{"name": "Onchain Place #',
-                _toString(id),
-                '", "description": "',
-                "This place stays onchain", 
-                '", "image": "data:image/svg+xml;base64,',
-                _encode(bytes(_tokenSvg(id))),
-                '", "attributes": [{"trait_type": "Total changes", "value": "',
-                _toString(_totalChanges),
-                '"}]}'
-            ))
-        ));
     }
 
     function _mint(uint256 offset) internal {
@@ -121,6 +99,25 @@ contract OnchainPlace is IOnchainPlace, ERC721, ParsingHelper {
         _totalSupply++;
     }
 
+    function tokenURI(uint256 id) public view override returns (string memory) {
+        require(id < _totalSupply);
+
+        return string(abi.encodePacked(
+            "data:application/json;base64,",
+            Parser.encode(abi.encodePacked(
+                '{"name": "Onchain Place #',
+                Parser.toString(id),
+                '", "description": "',
+                "This place stays onchain", 
+                '", "image": "data:image/svg+xml;base64,',
+                Parser.encode(bytes(_tokenSvg(id))),
+                '", "attributes": [{"trait_type": "Total changes", "value": "',
+                Parser.toString(_totalChanges),
+                '"}]}'
+            ))
+        ));
+    }
+
     function _tokenSvg(uint256 id) internal view returns (string memory) {      
         string memory chunk;
 
@@ -138,9 +135,9 @@ contract OnchainPlace is IOnchainPlace, ERC721, ParsingHelper {
             chunk = string(abi.encodePacked(
                 chunk, 
                 "<rect x='",
-                _toString(x),
+                Parser.toString(x),
                 "' y='",
-                _toString(y),
+                Parser.toString(y),
                 "' width='1' height='1' fill='#",
                 colors[_tokens[id].snapshot[i]],
                 "'/>"
@@ -152,5 +149,32 @@ contract OnchainPlace is IOnchainPlace, ERC721, ParsingHelper {
             chunk, 
             "</svg>"
         ));
+    }
+
+    function mintFee() external pure override returns (uint256) {
+        return MINT_FEE;
+    }
+
+    function totalSupply() external view override returns (uint256) {
+        return _totalSupply;
+    }
+
+    function totalChanges() external view override returns (uint256) {
+        return _totalChanges;
+    }
+
+    function withdraw(address token) external onlyOwner {
+        uint256 amount;
+        
+        if(token != address(0)) {
+            IERC20 erc20 = IERC20(token);
+            amount = erc20.balanceOf(address(this));
+            erc20.transfer(owner(), amount);
+        } else {
+            amount = address(this).balance;
+            owner().call{value: amount}("");
+        }
+
+        emit Withdraw(owner(), token, amount);
     }
 }

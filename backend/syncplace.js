@@ -5,72 +5,72 @@ import scheduler from "node-schedule";
 
 dotenv.config();
 
-function setChatAt(str, index, chr) {
-    return str.substring(0, index) + chr + str.substring(index + 1);
-}
+const s3Client = new S3Client({
+    endpoint: "https://fra1.digitaloceanspaces.com",
+    region: "us-east-1",
+    credentials: {
+        accessKeyId: process.env.KEY_ID,
+        secretAccessKey: process.env.SECERT_KEY
+    }
+});
 
-var scheduleLock = false;
+let scheduleLock = false;
 
-scheduler.scheduleJob('*/1 * * * * *', async function() {
+scheduler.scheduleJob('* * * * * *', async function() {
     if(scheduleLock == false) {
         scheduleLock = true;
 
-        await checkFile();
+        await checkPlace();
 
         scheduleLock = false;
     }
 });
 
-async function checkFile() {
-    var placeJson = await getPlaceFile();
-    const startTotalChanges = placeJson["totalChanges"];
+function setChatAt(str, index, chr) {
+    return str.substring(0, index) + chr + str.substring(index + 1);
+}
+
+async function checkPlace() {
+    let place = await getPlace();
+    const startTotalChanges = place["totalChanges"];
 
     for(let i = 0; i < 10; i++) {
-        const latestPixels = await queryLatestPixels(placeJson["totalChanges"]);
+        const latestPixels = await queryLatestPixels(place["totalChanges"]);
 
         if(latestPixels.length == 0) {
             break;
         } 
 
         for(let i = 0; i < latestPixels.length; i++) {
-            var position = parseInt(latestPixels[i]["position"]);
-            var color = parseInt(latestPixels[i]["color"]).toString(16);
-            placeJson["place"] = setChatAt(placeJson["place"], position, color);
+            let position = parseInt(latestPixels[i]["position"]);
+            let color = parseInt(latestPixels[i]["color"]).toString(16);
+            place["place"] = setChatAt(place["place"], position, color);
         }
     
-        placeJson["totalChanges"] = latestPixels[latestPixels.length - 1]["totalChanges"];
+        place["totalChanges"] = latestPixels[latestPixels.length - 1]["totalChanges"];
     }
 
-    if(startTotalChanges != placeJson["totalChanges"]) {
-        await updatePlace(placeJson);
+    if(startTotalChanges != place["totalChanges"]) {
+        await updatePlace(place);
     }
 }
 
-async function updatePlace(placeJson) {
-    const s3Client = new S3Client({
-        endpoint: "https://fra1.digitaloceanspaces.com",
-        region: "us-east-1",
-        credentials: {
-          accessKeyId: process.env.KEY_ID,
-          secretAccessKey: process.env.SECERT_KEY
-        }
-    });
-
+async function updatePlace(place) {
     const params = {
         Bucket: "onchainplace",
         Key: "place.json",
-        Body: JSON.stringify(placeJson),
+        Body: JSON.stringify(place),
         ACL: "public-read",
         ContentType: "application/json"  
     };
 
     await s3Client.send(new PutObjectCommand(params));
 
-    console.log(new Date().toLocaleString() + " | file updated! total changes: " + placeJson["totalChanges"].toString());
+    console.log(new Date().toLocaleString() + " | place updated! total changes: " + place["totalChanges"].toString());
 }
 
-async function getPlaceFile() {
-    var placeJson;
+async function getPlace() {
+    let place;
     
     await fetch('https://onchainplace.fra1.digitaloceanspaces.com/place.json', {
 		method: 'GET',
@@ -80,10 +80,10 @@ async function getPlaceFile() {
 	})
     .then(response => response.json())
     .then(responseJson => {
-        placeJson = responseJson;
+        place = responseJson;
     });
 
-    return placeJson;
+    return place;
 }
 
 async function queryLatestPixels(lower) {
@@ -97,7 +97,7 @@ async function queryLatestPixels(lower) {
         }
     }`;
 
-    var queryResponse;
+    let queryResponse;
 
     await fetch('https://api.thegraph.com/subgraphs/name/paranoidsyntaxerror/onchain-place', {
         method: 'POST',

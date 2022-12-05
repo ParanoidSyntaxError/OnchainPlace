@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.11;
 
-contract ParsingHelper {    
+library Parser {    
     string internal constant TABLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-    function _toString(uint256 value) internal pure returns (string memory) {
+    function toString(uint256 value) external pure returns (string memory) {
         if (value == 0) {
             return "0";
         }
@@ -23,7 +23,7 @@ contract ParsingHelper {
         return string(buffer);
     }
 
-    function _encode(bytes memory data) internal pure returns (string memory) 
+    function encode(bytes memory data) external pure returns (string memory) 
     {
         if (data.length == 0) return "";
 

@@ -3,9 +3,8 @@
   "version": "0.1",
   "private": true,
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.165.0",
+    "@aws-sdk/client-s3": "^3.223.0",
     "dotenv": "^16.0.2",
-    "mysql": "^2.18.1",
     "node-fetch": "^3.2.10",
     "node-schedule": "^2.1.0"
   },
