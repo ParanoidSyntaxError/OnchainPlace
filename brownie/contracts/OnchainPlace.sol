@@ -11,8 +11,8 @@ import "./Parser.sol";
 contract OnchainPlace is IOnchainPlace, ERC721, Ownable {
     event PixelSet (
         address indexed author,
-        uint256 position,
-        uint256 color,
+        uint256 indexed position,
+        uint256 indexed color,
         uint256 totalChanges
     );
     
@@ -49,8 +49,10 @@ contract OnchainPlace is IOnchainPlace, ERC721, Ownable {
     // Token ID => Token data
     mapping(uint256 => Token) internal _tokens;
 
+    // Total minted places
     uint256 internal _totalSupply;
 
+    // Total pixel changes
     uint256 internal _totalChanges;
 
     constructor() ERC721("Onchain Place", "PLACE") {
@@ -61,6 +63,12 @@ contract OnchainPlace is IOnchainPlace, ERC721, Ownable {
         _mint(0);
     }
 
+    /*
+        @notice Set the color of a pixel in the place
+    
+        @param position The position of the pixel in the place to change
+        @param color The color to set the pixel in the place
+    */
     function setPixel(uint256 position, uint256 color) external override {
         require(position < PLACE_AREA);
         require(color <= MAX_COLOR);
@@ -72,10 +80,20 @@ contract OnchainPlace is IOnchainPlace, ERC721, Ownable {
         emit PixelSet(msg.sender, position, color, _totalChanges);
     }
 
+    /*
+        @notice Mint the current place
+
+        @param offset The viewable offset
+    */
     function mint(uint256 offset) external payable override {
         _mint(offset);
     }
 
+    /*
+        @dev Mint the current place
+
+        @param offset The viewable offset
+    */
     function _mint(uint256 offset) internal {
         require(msg.value >= MINT_FEE);
         require(_totalSupply == 0 || _tokens[_totalSupply - 1].totalChanges != _totalChanges);
@@ -99,6 +117,13 @@ contract OnchainPlace is IOnchainPlace, ERC721, Ownable {
         _totalSupply++;
     }
 
+    /*
+        @notice Returns the standard NFT metadata for a minted place
+
+        @param id Mint ID
+
+        @return URI of the parameters mint ID
+    */
     function tokenURI(uint256 id) public view override returns (string memory) {
         require(id < _totalSupply);
 
@@ -118,6 +143,13 @@ contract OnchainPlace is IOnchainPlace, ERC721, Ownable {
         ));
     }
 
+    /*
+        @dev Returns the svg of the parameters mint ID
+    
+        @param id Mint ID
+
+        @return Svg of the parameters mint ID
+    */
     function _tokenSvg(uint256 id) internal view returns (string memory) {      
         string memory chunk;
 
@@ -151,21 +183,40 @@ contract OnchainPlace is IOnchainPlace, ERC721, Ownable {
         ));
     }
 
+    /*
+        @notice Returns the fee required to mint the current place
+    
+        @return Amount of native ETH required to mint the current place
+    */
     function mintFee() external pure override returns (uint256) {
         return MINT_FEE;
     }
 
+    /*
+        @notice Returns the total number of minted places
+
+        @return Total supply of minted places
+    */
     function totalSupply() external view override returns (uint256) {
         return _totalSupply;
     }
 
+    /*
+        @notice Returns the places total changes
+
+        @return Total changes to the place
+    */
     function totalChanges() external view override returns (uint256) {
         return _totalChanges;
     }
 
+    /*
+        @notice Withdraws this contracts ERC20 token balance, or native ETH
+
+        @param token The ERC20 token contract address. A zero address is equivalent to native ETH
+    */
     function withdraw(address token) external onlyOwner {
         uint256 amount;
-        
         if(token != address(0)) {
             IERC20 erc20 = IERC20(token);
             amount = erc20.balanceOf(address(this));
@@ -174,7 +225,7 @@ contract OnchainPlace is IOnchainPlace, ERC721, Ownable {
             amount = address(this).balance;
             owner().call{value: amount}("");
         }
-
+        require(amount > 0);
         emit Withdraw(owner(), token, amount);
     }
 }

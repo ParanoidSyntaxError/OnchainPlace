@@ -1,24 +1,8 @@
-document.getElementById("btn-refreshplace").onclick = refreshPlace;
+let canvasData = document.getElementById("canvas-data");
+let canvasView = document.getElementById("canvas-view");
 
-document.getElementById("btn-resetzoom").onclick = resetZoom;
-document.getElementById("btn-center").onclick = center;
-
-var canvasData = document.getElementById("canvas-data");
-var canvasView = document.getElementById("canvas-view");
-
-var ctxData = canvasData.getContext("2d");
-var ctxView = canvasView.getContext("2d");
-
-canvasView.addEventListener('wheel', (e) => adjustScale(e.deltaY * (scrollSensitivity * scale)));
-canvasView.addEventListener('mousedown', onPointerDown);
-canvasView.addEventListener('mouseup', onPointerUp);
-canvasView.addEventListener('mousemove', onPointerMove);
-
-canvasView.addEventListener('touchstart', (e) => handleTouch(e, onPointerDown))
-canvasView.addEventListener('touchend',  (e) => handleTouch(e, onPointerUp))
-canvasView.addEventListener('touchmove', (e) => handleTouch(e, onPointerMove))
-
-window.onresize = flexCanvasSize;
+let ctxData = canvasData.getContext("2d");
+let ctxView = canvasView.getContext("2d");
 
 const colors = [
     "ffffff", "e4e4e4", "888888", "222222",
@@ -39,12 +23,23 @@ let drag = { x: 0, y: 0 };
 let initialPinchDistance = null;
 let lastScale = scale;
 
-var placeImageData;
-let canvasTotalChanges;
+let canvasImage;
+let placeTotalChanges;
+
+canvasView.addEventListener('wheel', (e) => adjustScale(e.deltaY * (scrollSensitivity * scale)));
+canvasView.addEventListener('mousedown', onPointerDown);
+canvasView.addEventListener('mouseup', onPointerUp);
+canvasView.addEventListener('mousemove', onPointerMove);
+
+canvasView.addEventListener('touchstart', (e) => handleTouch(e, onPointerDown))
+canvasView.addEventListener('touchend',  (e) => handleTouch(e, onPointerUp))
+canvasView.addEventListener('touchmove', (e) => handleTouch(e, onPointerMove))
+
+window.onresize = flexCanvasSize;
 
 initializeCanvas();
 
-async function initializeCanvas() {
+function initializeCanvas() {  
     canvasData.width = 1000;
     canvasData.height = 1000;
     canvasView.width = 1000;
@@ -52,133 +47,52 @@ async function initializeCanvas() {
 
     flexCanvasSize();
 
-    clearPlace();
-
-    placeImageData = ctxData.createImageData(1000, 1000);
-
-    await fetchPlace();
-    await fetchSubgraph();
-
-    drawImageData(placeImageData);
+    clearCanvas();
 }
 
-async function refreshPlace() {
-    await fetchSubgraph();
+function setPlace(place, totalChanges) {
+    image = ctxData.createImageData(1000, 1000);
+    for (let i = 0; i < 1000000; i++) {
+        var color = colors[parseInt(place[i], 16)];
 
-    drawImageData(placeImageData);
+        image.data[(i * 4)] = parseInt(color.slice(0, 2), 16);
+        image.data[(i * 4) + 1] = parseInt(color.slice(2, 4), 16);
+        image.data[(i * 4) + 2] = parseInt(color.slice(4, 6), 16);
+        image.data[(i * 4) + 3] = 255;
+    }
+    setCanvasImage(image);
+    placeTotalChanges = totalChanges;
 }
 
-async function fetchSubgraph() {  
-    pixels = await queryPixels(canvasTotalChanges);
-
+function addPixels(pixels) {
+    image = canvasImage;
     if(pixels.length > 0) {
         for (let i = 0; i < pixels.length; i++) {
             var color = colors[parseInt(pixels[i]["color"])];
             var position = pixels[i]["position"];
     
-            placeImageData.data[(position * 4)] = parseInt(color.slice(0, 2), 16);
-            placeImageData.data[(position * 4) + 1] = parseInt(color.slice(2, 4), 16);
-            placeImageData.data[(position * 4) + 2] = parseInt(color.slice(4, 6), 16);
-            placeImageData.data[(position * 4) + 3] = 255;
+            image.data[(position * 4)] = parseInt(color.slice(0, 2), 16);
+            image.data[(position * 4) + 1] = parseInt(color.slice(2, 4), 16);
+            image.data[(position * 4) + 2] = parseInt(color.slice(4, 6), 16);
+            image.data[(position * 4) + 3] = 255;
         }
 
-        canvasTotalChanges = pixels[pixels.length - 1]["totalChanges"];
+        setCanvasImage(image);
+        placeTotalChanges = pixels[pixels.length - 1]["totalChanges"];
     }
 }
 
-async function queryPixels(lower) {
-    lower = parseInt(lower);
-
-    const query = `query response($lower:Int) {
-        pixels(orderBy:totalChanges where:{totalChanges_gt:$lower}) {
-            position
-            color
-            totalChanges
-        }
-    }`;
-
-    var queryResponse;
-
-    await fetch('https://api.thegraph.com/subgraphs/name/paranoidsyntaxerror/onchain-place', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-            query,
-            variables: { lower }
-        })
-    })
-    .then(response => response.json())
-    .then(responseJson => {
-        queryResponse = responseJson["data"]["pixels"];
-    });
-
-    return queryResponse;
-}
-
-async function fetchPlace() {
-    var placeJson = await getPlaceFile();
-
-    for (let i = 0; i < 1000000; i++) {
-        var color = colors[parseInt(placeJson["place"][i], 16)];
-
-        placeImageData.data[(i * 4)] = parseInt(color.slice(0, 2), 16);
-        placeImageData.data[(i * 4) + 1] = parseInt(color.slice(2, 4), 16);
-        placeImageData.data[(i * 4) + 2] = parseInt(color.slice(4, 6), 16);
-        placeImageData.data[(i * 4) + 3] = 255;
-    }
-
-    canvasTotalChanges = placeJson["totalChanges"];
-}
-
-function drawImageData(imageData) {
+function setCanvasImage(image) {
     ctxView.imageSmoothingEnabled = false;
 
-    ctxData.putImageData(imageData, 0, 0);
+    ctxData.putImageData(image, 0, 0);
     ctxView.drawImage(canvasData, 0, 0, canvasView.width, canvasView.height);
 
     source = canvasData.toDataURL("image/png");
+    canvasImage = image;
 }
 
-async function getPlaceFile() {
-    var placeJson;
-
-    await fetch('https://onchainplace.fra1.cdn.digitaloceanspaces.com/place.json', {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json'
-		}
-	})
-    .then(response => response.json())
-    .then(responseJson => {
-        placeJson = responseJson;
-    });
-
-    return placeJson;
-}
-
-function generatePlace() {
-    var imageData = ctxData.createImageData(1000, 1000);
-
-    for (let i = 0; i < imageData.data.length; i += 4) {
-        imageData.data[i + 0] = Math.floor(Math.random() * 255);
-        imageData.data[i + 1] = Math.floor(Math.random() * 255);
-        imageData.data[i + 2] = Math.floor(Math.random() * 255);
-
-        imageData.data[i + 3] = 255;
-    }
-
-    ctxView.imageSmoothingEnabled = false;
-
-    ctxData.putImageData(imageData, 0, 0);
-    ctxView.drawImage(canvasData, 0, 0, canvasView.width, canvasView.height);
-
-    source = canvasData.toDataURL("image/png");
-}
-
-function clearPlace() {
+function clearCanvas() {
     canvasOffset = { x: 0, y: 0 };
     scale = 1;
     dragging = false;
@@ -192,17 +106,20 @@ function clearPlace() {
 
 function center() {
     canvasOffset = { x: 0, y: 0 };
-
     applyTransform();
 }
 
 function resetZoom() {
     scale = 1;
-
     applyTransform();
 }
 
 function flexCanvasSize() {
+    const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+    const sw = screen.width;
+    const sh = screen.height;
+
     var rect = canvasView.parentNode.getBoundingClientRect();
     canvasView.width = rect.width;
     canvasView.height = rect.height;

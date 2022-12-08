@@ -4,21 +4,27 @@
         <link rel="stylesheet" type="text/css" href="stylesheet.css">
     </head>
     <body style="background-color: lightsteelblue;">
-        <div style="text-align: right;">
-            <button class="button" style="background-color:grey;"  id="btn-connect">Connect</button>
+        <div style="text-align: left; position: absolute;">
+            <a href="http://127.0.0.1:5500" style="margin-right: 10px;"><button class="button" style="background-color:darkblue;">Home</button></a>
+            <a href="http://127.0.0.1:5500/mints.html"><button class="button" style="background-color:blue;">Mints</button></a>
         </div>
 
+        <div style="text-align: right;">
+            <button class="button" style="background-color:blue;" id="btn-connect">Connect</button>
+        </div>
+        
         <div style="text-align: center; margin-bottom: 15px;">
-            <button class="button" style="background-color: blue; margin: 0px 5px;" id="btn-refreshplace">Refresh</button>
+            <button class="button" style="background-color: blue; margin: 0px 5px;" id="btn-refresh">Refresh</button>
+
             <button class="button" style="background-color: grey; margin: 0px 5px;" id="btn-resetzoom">Reset Zoom</button>
             <button class="button" style="background-color: grey; margin-left: 5px; margin-right: 10px;" id="btn-center">Center</button>
+
             <input class="input-number" id="input-offsetx" type="number" placeholder="X" min="0" max="984"/>
             <input class="input-number" id="input-offsety" type="number" placeholder="Y" min="0" max="984"/>
             <button class="button" style="background-color: blue;" id="btn-mint">Mint</button>
         </div>
 
         <div class="canvas-parent" style="margin-bottom: 15px;">
-            <canvas id="canvas-hidden" hidden></canvas>
             <canvas id="canvas-data" hidden></canvas>
             <canvas id="canvas-view" class="canvas-place"></canvas>
         </div>
@@ -144,4 +150,6 @@
     <script type="text/javascript" src="placecanvas.js"></script>
     <script type="text/javascript" src="saveasmodal.js"></script>
     <script type="text/javascript" src="web3handler.js"></script>
+    <script type="text/javascript" src="queryplace.js"></script>
+    <script type="text/javascript" src="index.js"></script>
 </html>

@@ -1,0 +1,56 @@
+<html>
+    <head>
+        <title>onchain.place</title>
+        <link rel="stylesheet" type="text/css" href="stylesheet.css">
+    </head>
+    <body style="background-color: lightsteelblue;">
+        <div style="text-align: left;">
+            <a href="http://127.0.0.1:5500" style="margin-right: 10px;"><button class="button" style="background-color:blue;">Home</button></a>
+            <a href="http://127.0.0.1:5500/mints.html"><button class="button" style="background-color:darkblue;">Mints</button></a>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 15px;">
+            <button class="button" style="background-color: grey; margin-right: 10px;" id="btn-resetzoom">Reset Zoom</button>
+            <button class="button" style="background-color: grey;" id="btn-center">Center</button>
+        </div>
+
+        <div class="canvas-parent" style="margin-bottom: 15px;">
+            <canvas id="canvas-data" hidden></canvas>
+            <canvas id="canvas-view" class="canvas-place"></canvas>
+        </div>
+
+        <div style="text-align: center;">
+            <span class="box" style="padding: 0 5px;" id="box-id">
+                ID: null
+            </span>
+            <span class="box" style="padding: 0 5px; margin: 0 5px;" id="box-changes">
+                Changes: null
+            </span>
+            <span class="box" style="padding: 0 5px;" id="box-owner">
+                Owner: null
+            </span>
+        </div>
+
+        <div style="text-align: center; margin-top: 10px;">
+            <input class="input-number" type="number" placeholder="Mint ID" min="0" max="1000000000" id="input-mintid"/>
+            <button class="button" style="background-color: blue;" id="btn-search">Search</button>
+        </div>
+
+        <div id="modal-saveas" class="modal">
+            <div class="modal-content">
+                <h id="modal-close" class="close">&times;</h>
+                <div class="modal-header">
+                    <h>UNAUTHORIZED SAVE AS!</h>
+                </div>
+                <div class="modal-body">
+                    <p>Stealing NFT’s is a crime, offenders will be prosecuted</p>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script type="text/javascript" src="placecanvas.js"></script>
+    <script type="text/javascript" src="saveasmodal.js"></script>
+    <script type="text/javascript" src="queryplace.js"></script>
+    <script type="text/javascript" src="mints.js"></script>
+</html>
