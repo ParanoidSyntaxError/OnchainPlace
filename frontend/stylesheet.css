@@ -14,7 +14,7 @@
     flex-wrap: wrap;
     column-gap: 20px;
     row-gap: 20px;
-    max-width: 850px;
+    max-width: 800px;
     margin: 0px auto;
 }
 .mint-frame {
@@ -33,6 +33,12 @@
 .mint-frame:active {
     transform: translate(2px, 2px);
     box-shadow: none;
+}
+.mint-text {
+    font-family: 'System',monospace;
+    font-size: 16px; 
+    color:black;
+    text-size-adjust: none;
 }
 .mint-image {
     border: 2px solid grey;

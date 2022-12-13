@@ -61,10 +61,12 @@ async function displayOwnedMints() {
     
             let itemId = document.createElement("div");
             itemId.innerHTML = "ID: " + mints[i]["id"];
-    
+            itemId.className = "mint-text";
+            
             let itemChanges = document.createElement("div");
             itemChanges.innerHTML = "Changes: " + mints[i]["totalChanges"];
-    
+            itemChanges.className = "mint-text";
+
             let itemImage = document.createElement("img");
             let mintJson = JSON.parse(atob(responses[i].replace("data:application/json;base64,", "")));
             itemImage.src = mintJson["image"];
