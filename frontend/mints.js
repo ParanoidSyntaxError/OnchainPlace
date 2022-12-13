@@ -19,7 +19,7 @@ const ownedParent = document.getElementById("div-ownedparent");
 initialize();
 
 async function initialize() {
-    connection.onConnected = displayOwnedMints;
+    //connection.onConnected = displayOwnedMints;
 
     const total = await totalMints();
     await displayMint(total - 1);

@@ -1,3 +1,4 @@
+/*
 const contractAddress = "0xBCB77f974b9956f58380870c9e35a443507FE655";
 
 const contractAbi = [
@@ -478,9 +479,55 @@ var signer;
 var contract;
 
 var connection = {
-	signer,
 	onConnected: function(){},
 }
+*/
+
+const Web3Modal = window.Web3Modal.default;
+const WalletConnectProvider = window.WalletConnectProvider.default;
+const Fortmatic = window.Fortmatic;
+const evmChains = window.evmChains;
+
+// Web3modal instance
+let web3Modal
+
+// Chosen wallet provider given by the dialog window
+let provider;
+
+// Address of the selected account
+let selectedAccount;
+
+initialize();
+
+function initialize() {
+	const providerOptions = {
+		walletconnect: {
+			package: WalletConnectProvider
+		},
+		fortmatic: {
+			package: Fortmatic
+		}
+	};
+
+	web3Modal = new Web3Modal({
+		cacheProvider: false,
+		providerOptions,
+		disableInjectedProvider: false,
+	});
+}
+
+async function connect() {
+	try {
+		provider = await web3Modal.connect();
+	} catch(e) {
+		console.log("Could not get a wallet connection", e);
+		return;
+	}
+}
+
+
+
+/*
 
 window.ethereum.on('accountsChanged', async () => {
 	requestAccounts();
@@ -493,7 +540,6 @@ async function checkConnected() {
 		connectButton.innerHTML = accounts[0].toString().slice(0, 5) + "..." + accounts[0].toString().slice(38, 42);
 		connectButton.style = "background-color:darkblue;";
 		connectButton.disabled = true;
-		connection.signer = signer;
 		connection.onConnected();
 		
 	} else {
@@ -536,3 +582,4 @@ async function mint(x, y) {
 async function getTokenImages(ids) {
 
 }
+*/
