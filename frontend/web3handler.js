@@ -471,79 +471,68 @@ const contractAbi = [
 const connectButton = document.getElementById("btn-connect");
 connectButton.onclick = requestAccounts;
 
-document.getElementById("btn-mint").onclick = mint;
-
-document.getElementById("btn-setpixel").onclick = setPixel;
-const pixelX = document.getElementById("input-x");
-const pixelY = document.getElementById("input-y");
-const offsetX = document.getElementById("input-offsetx");
-const offsetY = document.getElementById("input-offsety");
-
-const provider = new ethers.providers.Web3Provider(window.ethereum);
-var contract = new ethers.Contract(contractAddress, contractAbi, provider);
+var provider;
 var accounts;
 var signer;
 
+var contract;
+
+var connection = {
+	signer,
+	onConnected: function(){},
+}
+
 window.ethereum.on('accountsChanged', async () => {
-	checkConnected();
+	requestAccounts();
 });
 
 async function checkConnected() {
 	const acts = await ethereum.request({ method: 'eth_accounts' });
 
     if(acts && acts.length > 0) {
-		connectButton.innerHTML = accounts[0].toString().slice(0, 5) + "..." + accounts[0].toString().slice(38, 42) + " Connected";
+		connectButton.innerHTML = accounts[0].toString().slice(0, 5) + "..." + accounts[0].toString().slice(38, 42);
 		connectButton.style = "background-color:darkblue;";
 		connectButton.disabled = true;
+		connection.signer = signer;
+		connection.onConnected();
+		
 	} else {
 		connectButton.innerHTML = "Connect";
 		connectButton.style = "background-color:blue;";
 		connectButton.disabled = false;
+		connection.signer = undefined;
 	}
 }
 
-initialize();
-
-async function initialize() {   
-    accounts = await ethereum.request({ method: 'eth_accounts' })
-    connectSigner();
+async function requestAccounts() {
+	provider = new ethers.providers.Web3Provider(window.ethereum);
+    accounts = await provider.send("eth_requestAccounts",);
+    signer = provider.getSigner(accounts[0]);
+	contract = new ethers.Contract(contractAddress, contractAbi, signer);
 	checkConnected();
 }
 
-async function requestAccounts() {
-    accounts = await provider.send("eth_requestAccounts",);
-    connectSigner();
-}
-
-function connectSigner() {
-    signer = provider.getSigner(accounts[0]);
-    contract = new ethers.Contract(contractAddress, contractAbi, signer);
-}
-
-async function setPixel() {
-    var x = parseInt(pixelX.value);
-    var y = parseInt(pixelY.value);
-    var color = parseInt(document.querySelector('input[name="colors"]:checked').value);
-
-    if(x >= 0 && y >= 0 && x < 1000 && y < 1000 && color >= 0 && color < 16) {
+async function setPixel(x, y, color) {
+	if(x >= 0 && y >= 0 && x < 1000 && y < 1000 && color >= 0 && color < 16) {
         var position = x + (y * 1000);
-        var txn = await contract.setPixel(position, color);	
+        await contract.setPixel(position, color);	
 		return;
     }
 
     console.log("INVALID SET PIXEL INPUT!");
 }
 
-async function mint() {  
-    var x = parseInt(offsetX.value);
-    var y = parseInt(offsetY.value);
-
+async function mint(x, y) {  
     if(offsetX.value != NaN && offsetY.value != NaN && x >= 0 && y >= 0 && x < 985 && y < 985) {
         var position = x + (y * 1000);
         var mintFee = await contract.mintFee();
-        var txn = await contract.mint(position, { value: mintFee.toString() });
+        await contract.mint(position, { value: mintFee.toString() });
         return;
     }
 
     console.log("INVALID MINT INPUT!");
+}
+
+async function getTokenImages(ids) {
+
 }

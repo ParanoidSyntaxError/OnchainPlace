@@ -92,3 +92,32 @@ async function totalMints() {
 
     return parseInt(total) + 1;
 }
+
+async function ownedMints(owner) {
+    const query = `query response($owner:Bytes) {
+        tokens(where:{owner:$owner}) {
+            id
+            totalChanges
+        }
+    }`;
+
+    let mints;
+
+    await fetch('https://api.thegraph.com/subgraphs/name/paranoidsyntaxerror/onchain-place', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            query,
+            variables: { owner }
+        })
+    })
+    .then(response => response.json())
+    .then(responseJson => {
+        mints = responseJson["data"]["tokens"];
+    });
+
+    return mints;
+}

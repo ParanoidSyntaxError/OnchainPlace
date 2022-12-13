@@ -115,8 +115,6 @@ function resetZoom() {
 }
 
 function flexCanvasSize() {
-    //const vw = parseInt(Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0));
-    //const vh = parseInt(Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0));
     const vw = parseInt(window.innerWidth);
     const vh = parseInt(window.innerHeight);
 
@@ -125,15 +123,10 @@ function flexCanvasSize() {
     if(vw * 0.9 > vh - 200) {
         canvasParent.style.width = vh - 200;
         canvasParent.style.height = vh - 200;
-        console.log('hv')
     } else {
         canvasParent.style.width = vw * 0.9;
         canvasParent.style.height = vw * 0.9;
-        console.log('vw');
     }
-
-    console.log('Width: ' + canvasParent.style.width)
-    console.log('Height: ' + canvasParent.style.height)
 
     var rect = canvasParent.getBoundingClientRect();
     canvasView.width = rect.width;

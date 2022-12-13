@@ -7,6 +7,39 @@
     color:black;
 }
 
+.mints-parent {
+    align-items: center; 
+    justify-content: center; 
+    display: flex; 
+    flex-wrap: wrap;
+    column-gap: 20px;
+    row-gap: 20px;
+    max-width: 850px;
+    margin: 0px auto;
+}
+.mint-frame {
+    font-family: 'System',monospace;
+    font-size: 16px; 
+    background-color: lightgrey;
+    border: 2px solid white;
+    box-shadow: 2px 2px 0px black;
+    color:black;
+    width: fit-content; 
+    padding: 2px 5px;
+}
+.mint-frame:hover {
+    filter: brightness(0.9);
+}
+.mint-frame:active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+}
+.mint-image {
+    border: 2px solid grey;
+    width: 125px;
+    height: 125px;
+}
+
 .button {
     border: 2px solid white;
     box-shadow: 2px 2px 0px black;

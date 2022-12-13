@@ -1,13 +1,17 @@
 <html>
-    <head>
+    <head>       
         <title>Mints - onchain.place</title>
         <link rel="stylesheet" type="text/css" href="stylesheet.css">
         <link rel="icon" type="image/x-icon" href="ocp_icon.png">
     </head>
     <body style="background-color: lightsteelblue;">
-        <div style="text-align: left;">
+        <div style="text-align: left; position: absolute;">
             <a href="https://onchain.place" style="margin-right: 10px;"><button class="button" style="background-color:blue;">Home</button></a>
             <a href="https://onchain.place/mints.html"><button class="button" style="background-color:darkblue;">Mints</button></a>
+        </div>
+
+        <div style="text-align: right;">
+            <button class="button" style="background-color:blue;" id="btn-connect">Connect</button>
         </div>
 
         <div style="text-align: center; margin-bottom: 15px;">
@@ -36,6 +40,9 @@
             <input class="input-number" type="number" placeholder="Mint ID" min="0" max="1000000000" id="input-mintid"/>
             <button class="button" style="background-color: blue;" id="btn-search">Search</button>
         </div>
+       
+        <div class="mints-parent" id="div-ownedparent">
+        </div>
 
         <div id="modal-saveas" class="modal">
             <div class="modal-content">
@@ -49,9 +56,11 @@
             </div>
         </div>
     </body>
-
+    
+    <script type="text/javascript" src="ethers-5.6.umd.min.js"></script>    
     <script type="text/javascript" src="placecanvas.js"></script>
     <script type="text/javascript" src="saveasmodal.js"></script>
+    <script type="text/javascript" src="web3handler.js"></script>
     <script type="text/javascript" src="queryplace.js"></script>
     <script type="text/javascript" src="mints.js"></script>
 </html>
