@@ -483,6 +483,9 @@ var connection = {
 }
 */
 
+const connectButton = document.getElementById("btn-connect");
+connectButton.onclick = connect;
+
 const Web3Modal = window.Web3Modal.default;
 const WalletConnectProvider = window.WalletConnectProvider.default;
 const Fortmatic = window.Fortmatic;
