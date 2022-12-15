@@ -2,19 +2,21 @@
     <head>
         <title>Home - onchain.place</title>
         <link rel="stylesheet" type="text/css" href="stylesheet.css">
-        <link rel="icon" type="image/x-icon" href="ocp_icon.png">
+        <link rel="icon" type="image/x-icon" href="images/ocp_icon.png">
     </head>
     <body style="background-color: lightsteelblue;">
-        <div style="text-align: left; position: absolute;">
-            <a href="https://onchain.place" style="margin-right: 10px;"><button class="button" style="background-color:darkblue;">Home</button></a>
-            <a href="https://onchain.place/mints.html"><button class="button" style="background-color:blue;">Mints</button></a>
-        </div>
+        <a href="https://onchain.place" style="margin-right: 10px;"><button class="button" style="background-color:blue;">Home</button></a>
+        <a href="https://onchain.place/mints.html"><button class="button" style="background-color:darkblue;">Mints</button></a>
+        
+        <button class="button" style="float: right; background-color:blue;" id="btn-connect">Connect</button>
 
-        <div style="text-align: right;">
-            <button class="button" style="background-color:blue;" id="btn-connect">Connect</button>
+        <div id="modal-error" class="error-modal" hidden>
+            <div class="error-modal-content">
+                ERROR
+            </div>
         </div>
         
-        <div style="text-align: center; margin-bottom: 15px;">
+        <div style="text-align: center; margin: 15px 0px;">
             <button class="button" style="background-color: blue; margin: 0px 5px;" id="btn-refresh">Refresh</button>
 
             <button class="button" style="background-color: grey; margin: 0px 5px;" id="btn-resetzoom">Reset Zoom</button>
@@ -134,23 +136,31 @@
             <button class="button" style="background-color: blue;" id="btn-setpixel">Set Pixel</button>
         </div>
 
-        <div id="modal-saveas" class="modal">
-            <div class="modal-content">
-                <h id="modal-close" class="close">&times;</h>
-                <div class="modal-header">
+        <div id="modal-saveas" class="saveas-modal">
+            <div class="saveas-modal-content">
+                <h id="modal-close" class="saveas-close">&times;</h>
+                <div class="saveas-modal-header">
                     <h>UNAUTHORIZED RIGHT CLICK!</h>
                 </div>
-                <div class="modal-body">
+                <div class="saveas-modal-body">
                     <p>Copying NFT’s is a crime, offenders will be prosecuted</p>
                 </div>
             </div>
         </div>
     </body>
 
-    <script type="text/javascript" src="ethers-5.6.umd.min.js"></script>
+    <script type="text/javascript" src="scripts/ethers-5.6.umd.min.js"></script>
+
+    <script type="text/javascript" src="scripts/web3modal-1.9.10.js"></script>
+    <script type="text/javascript" src="scripts/evm-chains-0.2.0.min.js"></script>
+    <script type="text/javascript" src="scripts/web3-provider-1.8.0.min.js"></script>
+    <script type="text/javascript" src="scripts/fortmatic-2.4.0.js"></script>
+
     <script type="text/javascript" src="placecanvas.js"></script>
     <script type="text/javascript" src="saveasmodal.js"></script>
+    <script type="text/javascript" src="errormodal.js"></script>
     <script type="text/javascript" src="web3handler.js"></script>
     <script type="text/javascript" src="queryplace.js"></script>
+    
     <script type="text/javascript" src="index.js"></script>
 </html>

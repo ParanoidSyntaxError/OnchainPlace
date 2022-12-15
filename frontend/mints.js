@@ -19,7 +19,7 @@ const ownedParent = document.getElementById("div-ownedparent");
 initialize();
 
 async function initialize() {
-    //connection.onConnected = displayOwnedMints;
+    onConnected = displayOwnedMints;
 
     const total = await totalMints();
     await displayMint(total - 1);
@@ -41,7 +41,7 @@ async function displayOwnedMints() {
     ownedParent.style.padding = "25px 0px";
     ownedParent.innerHTML = "";
 
-    mints = await ownedMints(signer._address);
+    mints = await ownedMints(address);
 
     let promises = [];
 
@@ -51,32 +51,30 @@ async function displayOwnedMints() {
 
     const responses = await Promise.all(promises);
 
-    for(let a = 0; a < 5; a++) {
-        for(let i = 0; i < mints.length; i++) {
-            let frameParent = document.createElement("div");
-            frameParent.className = "mint-frame";
-            frameParent.onclick = function () {
-                displayMint(mints[i]["id"]);
-            };
-    
-            let itemId = document.createElement("div");
-            itemId.innerHTML = "ID: " + mints[i]["id"];
-            itemId.className = "mint-text";
-            
-            let itemChanges = document.createElement("div");
-            itemChanges.innerHTML = "Changes: " + mints[i]["totalChanges"];
-            itemChanges.className = "mint-text";
+    for(let i = 0; i < mints.length; i++) {
+        let frameParent = document.createElement("div");
+        frameParent.className = "mint-frame";
+        frameParent.onclick = function () {
+            displayMint(mints[i]["id"]);
+        };
 
-            let itemImage = document.createElement("img");
-            let mintJson = JSON.parse(atob(responses[i].replace("data:application/json;base64,", "")));
-            itemImage.src = mintJson["image"];
-            itemImage.className = "mint-image";
-    
-            frameParent.appendChild(itemId);
-            frameParent.appendChild(itemImage);
-            frameParent.appendChild(itemChanges);
-    
-            ownedParent.appendChild(frameParent);
-        }
+        let itemId = document.createElement("div");
+        itemId.innerHTML = "ID: " + mints[i]["id"];
+        itemId.className = "mint-text";
+        
+        let itemChanges = document.createElement("div");
+        itemChanges.innerHTML = "Changes: " + mints[i]["totalChanges"];
+        itemChanges.className = "mint-text";
+
+        let itemImage = document.createElement("img");
+        let mintJson = JSON.parse(atob(responses[i].replace("data:application/json;base64,", "")));
+        itemImage.src = mintJson["image"];
+        itemImage.className = "mint-image";
+
+        frameParent.appendChild(itemId);
+        frameParent.appendChild(itemImage);
+        frameParent.appendChild(itemChanges);
+
+        ownedParent.appendChild(frameParent);
     }
 }

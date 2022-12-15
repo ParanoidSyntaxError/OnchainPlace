@@ -26,5 +26,9 @@ document.getElementById("btn-mint").onclick = () => {
 };
 
 document.getElementById("btn-setpixel").onclick = () => {
-    setPixel(parseInt(pixelX.value), parseInt(pixelY.value), parseInt(document.querySelector('input[name="colors"]:checked').value));
+    let color = 9999;
+    try {
+        color = parseInt(document.querySelector('input[name="colors"]:checked').value);
+    } catch {}
+    setPixel(parseInt(pixelX.value), parseInt(pixelY.value), color);
 };

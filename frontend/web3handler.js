@@ -1,4 +1,3 @@
-/*
 const contractAddress = "0xBCB77f974b9956f58380870c9e35a443507FE655";
 
 const contractAbi = [
@@ -470,20 +469,6 @@ const contractAbi = [
 ];
 
 const connectButton = document.getElementById("btn-connect");
-connectButton.onclick = requestAccounts;
-
-var provider;
-var accounts;
-var signer;
-
-var contract;
-
-var connection = {
-	onConnected: function(){},
-}
-*/
-
-const connectButton = document.getElementById("btn-connect");
 connectButton.onclick = connect;
 
 const Web3Modal = window.Web3Modal.default;
@@ -491,14 +476,14 @@ const WalletConnectProvider = window.WalletConnectProvider.default;
 const Fortmatic = window.Fortmatic;
 const evmChains = window.evmChains;
 
-// Web3modal instance
-let web3Modal
+let web3Modal;
 
-// Chosen wallet provider given by the dialog window
-let provider;
+var provider;
+var signer;
+var address;
+var contract;
 
-// Address of the selected account
-let selectedAccount;
+var onConnected = function(){};
 
 initialize();
 
@@ -522,67 +507,74 @@ function initialize() {
 async function connect() {
 	try {
 		provider = await web3Modal.connect();
+		
+		provider.on("accountsChanged", (accounts) => {
+			getSigner();
+			displayConnection();
+		});
 	} catch(e) {
-		console.log("Could not get a wallet connection", e);
-		return;
+		errorMessage(e);
 	}
+
+	getSigner();
+	displayConnection();
 }
 
+async function getSigner() {
+	signer = undefined;
+	let web3 = new ethers.providers.Web3Provider(provider);
+	address = provider.selectedAddress;
+	signer = web3.getSigner();
+	contract = new ethers.Contract(contractAddress, contractAbi, signer);
+	onConnected();
+}
 
-
-/*
-
-window.ethereum.on('accountsChanged', async () => {
-	requestAccounts();
-});
-
-async function checkConnected() {
-	const acts = await ethereum.request({ method: 'eth_accounts' });
-
-    if(acts && acts.length > 0) {
-		connectButton.innerHTML = accounts[0].toString().slice(0, 5) + "..." + accounts[0].toString().slice(38, 42);
-		connectButton.style = "background-color:darkblue;";
+async function displayConnection() {
+    if(signer != undefined) {
+		connectButton.innerHTML = address.toString().slice(0, 5) + "..." + address.toString().slice(38, 42);
+		connectButton.style.backgroundColor = "darkblue";
 		connectButton.disabled = true;
-		connection.onConnected();
 		
 	} else {
 		connectButton.innerHTML = "Connect";
-		connectButton.style = "background-color:blue;";
+		connectButton.style.backgroundColor = "blue";
 		connectButton.disabled = false;
-		connection.signer = undefined;
 	}
 }
 
-async function requestAccounts() {
-	provider = new ethers.providers.Web3Provider(window.ethereum);
-    accounts = await provider.send("eth_requestAccounts",);
-    signer = provider.getSigner(accounts[0]);
-	contract = new ethers.Contract(contractAddress, contractAbi, signer);
-	checkConnected();
-}
-
-async function setPixel(x, y, color) {
-	if(x >= 0 && y >= 0 && x < 1000 && y < 1000 && color >= 0 && color < 16) {
-        var position = x + (y * 1000);
-        await contract.setPixel(position, color);	
-		return;
-    }
-
-    console.log("INVALID SET PIXEL INPUT!");
+function checkConnection() {
+	if(signer == undefined) {
+		errorMessage(ErrorCode.NotConnected);
+		return false;
+	}
+	return true;
 }
 
 async function mint(x, y) {  
-    if(offsetX.value != NaN && offsetY.value != NaN && x >= 0 && y >= 0 && x < 985 && y < 985) {
-        var position = x + (y * 1000);
-        var mintFee = await contract.mintFee();
-        await contract.mint(position, { value: mintFee.toString() });
-        return;
+	let connected = checkConnection();
+	if(connected == false) {
+		return;
+	}
+
+	try {
+		var position = x + (y * 1000);
+		var mintFee = await contract.mintFee();
+		await contract.mint(position, { value: mintFee.toString() });
+	} catch {
+        errorMessage(ErrorCode.InvalidMint);
+	}
+}
+
+async function setPixel(x, y, color) {
+	let connected = checkConnection();
+	if(connected == false) {
+		return;
+	}
+
+    try {
+		var position = x + (y * 1000);
+		await contract.setPixel(position, color);
+    } catch {
+        errorMessage(ErrorCode.InvalidSetPixel);
     }
-
-    console.log("INVALID MINT INPUT!");
 }
-
-async function getTokenImages(ids) {
-
-}
-*/

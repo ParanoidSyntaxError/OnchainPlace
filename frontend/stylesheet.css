@@ -2,9 +2,48 @@
     font-family: 'System',monospace;
     font-size: 16px; 
     background-color: white;
-    border: 2px solid darkgrey;
     box-shadow: 2px 2px 0px black;
     color:black;
+}
+
+.error-modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 5px;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.error-modal-content {
+    font-family: 'System',monospace;
+    font-size: 16px; 
+    padding: 2px 5px;
+
+    position: relative;
+
+    color: white;
+    background-color: red;
+    box-shadow: 2px 2px 0px black;
+    width: fit-content;
+
+    -webkit-animation-name: error-animatetop;
+    -webkit-animation-duration: 5s;
+    animation-name: error-animatetop;
+    animation-duration: 5s;
+}
+@-webkit-keyframes error-animatetop {
+    0% {top:-300px; opacity:0;} 
+    5% {top:0; opacity:1;}
+    90% {top:0; opacity:1;}
+    100% {top:-300px; opacity:0;}
+}
+@keyframes error-animatetop {
+    0% {top:-300px; opacity:0;}
+    5% {top:0; opacity:1;}
+    90% {top:0; opacity:1;}
+    100% {top:-300px; opacity:0;}
 }
 
 .mints-parent {
@@ -132,18 +171,18 @@
     outline: none;
 }
 
-.modal-header {
+.saveas-modal-header {
     padding: 10px 16px; 
     font-size: xx-large;
     font-family: 'System', monospace;
 
 }
-.modal-body {
+.saveas-modal-body {
     padding: 2px 16px; 
     font-size: large;
     font-family: 'System', monospace;
 }
-.modal {
+.saveas-modal {
     display: none;
     position: fixed;
     z-index: 1;
@@ -155,7 +194,7 @@
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.7);
 }
-.modal-content {
+.saveas-modal-content {
     position: relative;
     margin: auto;
     color: white;
@@ -163,31 +202,31 @@
     border: 2px solid white;
     width: 600px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-    -webkit-animation-name: animatetop;
+    -webkit-animation-name: saveas-animatetop;
     -webkit-animation-duration: 0.4s;
-    animation-name: animatetop;
+    animation-name: saveas-animatetop;
     animation-duration: 0.4s
 }
 
-@-webkit-keyframes animatetop {
+@-webkit-keyframes saveas-animatetop {
     from {top:-300px; opacity:0;} 
     to {top:0; opacity:1;}
 }
 
-@keyframes animatetop {
+@keyframes saveas-animatetop {
     from {top:-300px; opacity:0;}
     to {top:0; opacity:1;}
 }
 
-.close {
+.saveas-close {
     padding: 0px 8px; 
     color: black;
     float: right;
     font-size: 32px;
     font-weight: bolder;
 }
-.close:hover,
-.close:focus {
+.saveas-close:hover,
+.saveas-close:focus {
     color: white;
     text-decoration: none;
     cursor: pointer;
