@@ -56,7 +56,7 @@ contract OnchainPlace is IOnchainPlace, ERC721, Ownable {
     uint256 internal _totalChanges;
 
     constructor() ERC721("Onchain Place", "PLACE") {
-
+        
     }
 
     receive() external payable {
@@ -66,8 +66,8 @@ contract OnchainPlace is IOnchainPlace, ERC721, Ownable {
     /*
         @notice Set the color of a pixel in the place
     
-        @param position The position of the pixel in the place to change
-        @param color The color to set the pixel in the place
+        @param The position of the pixel in the place to change
+        @param The color to set the pixel in the place
     */
     function setPixel(uint256 position, uint256 color) external override {
         require(position < PLACE_AREA);
@@ -83,7 +83,7 @@ contract OnchainPlace is IOnchainPlace, ERC721, Ownable {
     /*
         @notice Mint the current place
 
-        @param offset The viewable offset
+        @param The viewable offset
     */
     function mint(uint256 offset) external payable override {
         _mint(offset);
@@ -92,11 +92,11 @@ contract OnchainPlace is IOnchainPlace, ERC721, Ownable {
     /*
         @dev Mint the current place
 
-        @param offset The viewable offset
+        @param The viewable offset
     */
     function _mint(uint256 offset) internal {
         require(msg.value >= MINT_FEE);
-        require(_totalSupply == 0 || _tokens[_totalSupply - 1].totalChanges != _totalChanges);
+        require(_tokens[_totalSupply - 1].totalChanges != _totalChanges || _totalSupply == 0);
         require(offset - ((offset / 1000) * 1000) <= PLACE_WIDTH - CHUNK_WIDTH);
         require(offset / 1000 <= PLACE_WIDTH - CHUNK_WIDTH);
     
@@ -120,9 +120,9 @@ contract OnchainPlace is IOnchainPlace, ERC721, Ownable {
     /*
         @notice Returns the standard NFT metadata for a minted place
 
-        @param id Mint ID
+        @param Mint ID
 
-        @return URI of the parameters mint ID
+        @return URI of the mint ID
     */
     function tokenURI(uint256 id) public view override returns (string memory) {
         require(id < _totalSupply);
@@ -137,7 +137,9 @@ contract OnchainPlace is IOnchainPlace, ERC721, Ownable {
                 '", "image": "data:image/svg+xml;base64,',
                 Parser.encode(bytes(_tokenSvg(id))),
                 '", "attributes": [{"trait_type": "Total changes", "value": "',
-                Parser.toString(_totalChanges),
+                Parser.toString(_tokens[id].totalChanges),
+                '"},{"trait_type": "Offset", "value": "',
+                Parser.toString(_tokens[id].offset),
                 '"}]}'
             ))
         ));
@@ -146,7 +148,7 @@ contract OnchainPlace is IOnchainPlace, ERC721, Ownable {
     /*
         @dev Returns the svg of the parameters mint ID
     
-        @param id Mint ID
+        @param Mint ID
 
         @return Svg of the parameters mint ID
     */
@@ -213,7 +215,7 @@ contract OnchainPlace is IOnchainPlace, ERC721, Ownable {
     /*
         @notice Withdraws this contracts ERC20 token balance, or native ETH
 
-        @param token The ERC20 token contract address. A zero address is equivalent to native ETH
+        @param The ERC20 token contract address. A zero address is equivalent to native ETH
     */
     function withdraw(address token) external onlyOwner {
         uint256 amount;

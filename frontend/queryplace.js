@@ -42,12 +42,20 @@ async function getPlace() {
     .then(response => response.json())
     .then(responseJson => {
         placeJson = responseJson;
+    })
+    .catch(() => {
+        errorMessage(ErrorCode.NonexistentPlace);
     });
 
     return placeJson;
 }
 
 async function getMint(id) {
+    if(id == NaN || id == undefined) {
+        errorMessage(ErrorCode.NoId);
+        return;
+    }
+
     var mintJson;
 
     await fetch('https://onchainplace.fra1.cdn.digitaloceanspaces.com/mints/place_' + id + '.json', {
@@ -59,6 +67,9 @@ async function getMint(id) {
     .then(response => response.json())
     .then(responseJson => {
         mintJson = responseJson;
+    })
+    .catch(() => {
+        errorMessage(ErrorCode.NonexistentMintId);
     });
 
     return mintJson;

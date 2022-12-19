@@ -477,10 +477,14 @@ const Fortmatic = window.Fortmatic;
 const evmChains = window.evmChains;
 
 let web3Modal;
+let web3;
 
 var provider;
+var chainData;
+
 var signer;
 var address;
+
 var contract;
 
 var onConnected = function(){};
@@ -512,6 +516,11 @@ async function connect() {
 			getSigner();
 			displayConnection();
 		});
+
+		provider.on("chainChanged", (chainId) => {
+			getSigner();
+			displayConnection();
+		});
 	} catch(e) {
 		errorMessage(e);
 	}
@@ -520,13 +529,36 @@ async function connect() {
 	displayConnection();
 }
 
+
 async function getSigner() {
 	signer = undefined;
-	let web3 = new ethers.providers.Web3Provider(provider);
+	web3 = new ethers.providers.Web3Provider(provider);
+	chainData = evmChains.getChain(parseInt(provider.chainId));
 	address = provider.selectedAddress;
 	signer = web3.getSigner();
 	contract = new ethers.Contract(contractAddress, contractAbi, signer);
 	onConnected();
+}
+
+async function getBalance() {
+	let connected = checkConnection();
+	if(connected) {
+		return await web3.getBalance(address);
+	}
+}
+
+async function getTotalSupply() {
+	let connected = checkConnection();
+	if(connected) {
+		return await contract.totalSupply();
+	}
+}
+
+async function getTotalChanges() {
+	let connected = checkConnection();
+	if(connected) {
+		return await contract.totalChanges();
+	}
 }
 
 async function displayConnection() {
@@ -546,35 +578,52 @@ function checkConnection() {
 	if(signer == undefined) {
 		errorMessage(ErrorCode.NotConnected);
 		return false;
+	} else if(chainData.chainId != 80001) {
+		errorMessage(ErrorCode.InvalidChainId);
+		return false;
 	}
 	return true;
 }
 
 async function mint(x, y) {  
 	let connected = checkConnection();
-	if(connected == false) {
-		return;
-	}
+	if(connected) {
+		let balance = await getBalance();
+		if(balance < 10**18) {
+			errorMessage(ErrorCode.InsufficientMatic);
+			return;
+		}
 
-	try {
-		var position = x + (y * 1000);
-		var mintFee = await contract.mintFee();
-		await contract.mint(position, { value: mintFee.toString() });
-	} catch {
-        errorMessage(ErrorCode.InvalidMint);
+		let totalSupply = await getTotalSupply();
+
+        let promises = [];
+		promises.push(getTotalChanges());
+		promises.push(getMint(totalSupply - 1));
+
+		const responses = await Promise.all(promises);
+
+		if(responses[1]["totalChanges"] == responses[0]) {
+			errorMessage(ErrorCode.M_NoChanges);
+			return;
+		}
+		
+		try {
+			var position = x + (y * 1000);
+			await contract.mint(position, { value: 10**18 });
+		} catch(e) {
+			errorMessage(ErrorCode.MintReverted);
+		}
 	}
 }
 
 async function setPixel(x, y, color) {
 	let connected = checkConnection();
-	if(connected == false) {
-		return;
-	}
-
-    try {
-		var position = x + (y * 1000);
-		await contract.setPixel(position, color);
-    } catch {
-        errorMessage(ErrorCode.InvalidSetPixel);
-    }
+	if(connected) {
+		try {
+			var position = x + (y * 1000);
+			await contract.setPixel(position, color);
+		} catch {
+			errorMessage(ErrorCode.SetPixelReverted);
+		}
+	}    
 }
