@@ -31,47 +31,47 @@ async function refreshPlace() {
 
 document.getElementById("btn-mint").onclick = async function() {
     showLoader();
-    try {
+    trymint: try {
         let x = parseInt(offsetX.value);
         let y = parseInt(offsetY.value);
     
         if(isNaN(x) || isNaN(y)) {
             errorMessage(ErrorCode.NoXY);
-            return;
+            break trymint;
         }
     
         if(x < 0) {
             errorMessage(ErrorCode.M_XTooLow);
-            return;
+            break trymint;
         }
         if(x > 985) {
             errorMessage(ErrorCode.M_XTooHigh);
-            return;
+             break trymint;
         }
         if(y < 0) {
             errorMessage(ErrorCode.M_YTooLow);
-            return;
+            break trymint;
         }
         if (y > 985) {
             errorMessage(ErrorCode.M_YTooHigh);
-            return;
+            break trymint;
         }
     
-        mint(parseInt(x), parseInt(y));
+        await mint(parseInt(x), parseInt(y));
     } catch {}
     hideLoader();
 };
 
 document.getElementById("btn-setpixel").onclick = async() => {
     showLoader();
-    try {
+    trysetpixel: try {
         let color;
         try {
             color = parseInt(document.querySelector('input[name="colors"]:checked').value);
         } catch {}
         if(color == undefined) {
             errorMessage(ErrorCode.SelectColor);
-            return;
+            break trysetpixel;
         }
     
         let x = parseInt(pixelX.value);
@@ -79,24 +79,24 @@ document.getElementById("btn-setpixel").onclick = async() => {
     
         if(isNaN(x) || isNaN(y)) {
             errorMessage(ErrorCode.NoXY);
-            return;
+            break trysetpixel;
         }
     
         if(x < 0) {
             errorMessage(ErrorCode.SP_XTooLow);
-            return;
+            break trysetpixel;
         }
         if(x > 999) {
             errorMessage(ErrorCode.SP_XTooHigh);
-            return;
+            break trysetpixel;
         }
         if(y < 0) {
             errorMessage(ErrorCode.SP_YTooLow);
-            return;
+            break trysetpixel;
         }
         if (y > 999) {
             errorMessage(ErrorCode.SP_YTooHigh);
-            return;
+            break trysetpixel;
         }
     
         await setPixel(x, y, color);
