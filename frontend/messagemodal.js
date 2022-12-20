@@ -1,4 +1,4 @@
-let errorModal = document.getElementById("modal-error");
+let modal = document.getElementById("modal-message");
 
 const ErrorCode = {
     NotConnected        : "Connect a wallet!",
@@ -26,19 +26,44 @@ const ErrorCode = {
     SelectColor         : "Select a color!"
 };
 
-const WarningCode = {
-
+const SuccessCode = {
+    SetPixelSuccess : "Set pixel transaction succeeded!",
+    MintSuccess     : "Mint transaction succeeded!"
 };
 
-errorModal.addEventListener('animationend', (event) => {
-    errorModal.style.display = "none";
+modal.addEventListener('animationend', (event) => {
+    modal.style.display = "none";
 });
 
-function errorMessage(message) {
-    errorModal.style.display = "none";
+function errorMessage(message, url) {
+    modal.style.display = "none";
+
+    modal.children[0].style.backgroundColor = "red";
+
+    if(url == "" || url == undefined) {
+        modal.children[0].removeAttribute("href");
+    } else {
+        modal.children[0].setAttribute("href", url);
+    }
+    setTimeout(function(){   
+        modal.children[0].innerHTML = message.toString();
+        modal.style.display = "block";
+    }, 10);
+}
+
+function successMessage(message, url) {
+    modal.style.display = "none";
+
+    modal.children[0].style.backgroundColor = "green";
+
+    if(url == "" || url == undefined) {
+        modal.children[0].removeAttribute("href");
+    } else {
+        modal.children[0].setAttribute("href", url);
+    }
 
     setTimeout(function(){   
-        errorModal.children[0].innerHTML = message.toString();
-        errorModal.style.display = "block";
+        modal.children[0].innerHTML = message.toString();
+        modal.style.display = "block";
     }, 10);
 }

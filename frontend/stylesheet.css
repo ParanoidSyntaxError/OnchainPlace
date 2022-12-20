@@ -20,7 +20,7 @@
     100% { transform: rotate(360deg); }
 }
 
-.error-modal {
+.message-modal {
     display: none;
     position: fixed;
     z-index: 1;
@@ -30,7 +30,7 @@
     transform: translate(-50%, 0);
 }
 
-.error-modal-content {
+.message-modal-content {
     font-family: 'System',monospace;
     font-size: 16px; 
     padding: 2px 5px;

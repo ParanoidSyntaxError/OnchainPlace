@@ -30,68 +30,77 @@ async function refreshPlace() {
 }
 
 document.getElementById("btn-mint").onclick = async function() {
-    let x = parseInt(offsetX.value);
-    let y = parseInt(offsetY.value);
-
-    if(isNaN(x) || isNaN(y)) {
-        errorMessage(ErrorCode.NoXY);
-        return;
-    }
-
-    if(x < 0) {
-        errorMessage(ErrorCode.M_XTooLow);
-        return;
-    }
-    if(x > 985) {
-        errorMessage(ErrorCode.M_XTooHigh);
-        return;
-    }
-    if(y < 0) {
-        errorMessage(ErrorCode.M_YTooLow);
-        return;
-    }
-    if (y > 985) {
-        errorMessage(ErrorCode.M_YTooHigh);
-        return;
-    }
-
-    mint(parseInt(x), parseInt(y));
+    showLoader();
+    try {
+        let x = parseInt(offsetX.value);
+        let y = parseInt(offsetY.value);
+    
+        if(isNaN(x) || isNaN(y)) {
+            errorMessage(ErrorCode.NoXY);
+            return;
+        }
+    
+        if(x < 0) {
+            errorMessage(ErrorCode.M_XTooLow);
+            return;
+        }
+        if(x > 985) {
+            errorMessage(ErrorCode.M_XTooHigh);
+            return;
+        }
+        if(y < 0) {
+            errorMessage(ErrorCode.M_YTooLow);
+            return;
+        }
+        if (y > 985) {
+            errorMessage(ErrorCode.M_YTooHigh);
+            return;
+        }
+    
+        mint(parseInt(x), parseInt(y));
+    } catch {}
+    hideLoader();
 };
 
-document.getElementById("btn-setpixel").onclick = () => {
-    let color;
+document.getElementById("btn-setpixel").onclick = async() => {
+    showLoader();
     try {
-        color = parseInt(document.querySelector('input[name="colors"]:checked').value);
+        let color;
+        try {
+            color = parseInt(document.querySelector('input[name="colors"]:checked').value);
+        } catch {}
+        if(color == undefined) {
+            errorMessage(ErrorCode.SelectColor);
+            return;
+        }
+    
+        let x = parseInt(pixelX.value);
+        let y = parseInt(pixelY.value);
+    
+        if(isNaN(x) || isNaN(y)) {
+            errorMessage(ErrorCode.NoXY);
+            return;
+        }
+    
+        if(x < 0) {
+            errorMessage(ErrorCode.SP_XTooLow);
+            return;
+        }
+        if(x > 999) {
+            errorMessage(ErrorCode.SP_XTooHigh);
+            return;
+        }
+        if(y < 0) {
+            errorMessage(ErrorCode.SP_YTooLow);
+            return;
+        }
+        if (y > 999) {
+            errorMessage(ErrorCode.SP_YTooHigh);
+            return;
+        }
+    
+        await setPixel(x, y, color);
+        refreshPlace();
     } catch {}
-    if(color == undefined) {
-        errorMessage(ErrorCode.SelectColor);
-        return;
-    }
-
-    let x = parseInt(pixelX.value);
-    let y = parseInt(pixelY.value);
-
-    if(isNaN(x) || isNaN(y)) {
-        errorMessage(ErrorCode.NoXY);
-        return;
-    }
-
-    if(x < 0) {
-        errorMessage(ErrorCode.SP_XTooLow);
-        return;
-    }
-    if(x > 999) {
-        errorMessage(ErrorCode.SP_XTooHigh);
-        return;
-    }
-    if(y < 0) {
-        errorMessage(ErrorCode.SP_YTooLow);
-        return;
-    }
-    if (y > 999) {
-        errorMessage(ErrorCode.SP_YTooHigh);
-        return;
-    }
-
-    setPixel(x, y, color);
+    hideLoader();
 };

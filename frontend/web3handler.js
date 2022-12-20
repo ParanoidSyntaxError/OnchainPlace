@@ -468,6 +468,8 @@ const contractAbi = [
 	}
 ];
 
+const explorerPrefix = "https://mumbai.polygonscan.com/tx/";
+
 const connectButton = document.getElementById("btn-connect");
 connectButton.onclick = connect;
 
@@ -608,8 +610,10 @@ async function mint(x, y) {
 		}
 		
 		try {
-			var position = x + (y * 1000);
-			await contract.mint(position, { value: 10**18 });
+			let position = x + (y * 1000);
+			let receipt = await contract.mint(position, { value: 10**18 });
+			let txn = await receipt.wait();
+			successMessage(SuccessCode.MintSuccess, explorerPrefix + txn['transactionHash']);
 		} catch(e) {
 			errorMessage(ErrorCode.MintReverted);
 		}
@@ -620,8 +624,10 @@ async function setPixel(x, y, color) {
 	let connected = checkConnection();
 	if(connected) {
 		try {
-			var position = x + (y * 1000);
-			await contract.setPixel(position, color);
+			let position = x + (y * 1000);
+			let receipt = await contract.setPixel(position, color);
+			let txn = await receipt.wait();
+			successMessage(SuccessCode.SetPixelSuccess, explorerPrefix + txn['transactionHash']);
 		} catch {
 			errorMessage(ErrorCode.SetPixelReverted);
 		}
