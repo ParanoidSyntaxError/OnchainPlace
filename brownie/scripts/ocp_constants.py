@@ -1,4 +1,4 @@
-class ocp_values:
+class ocp_constants:
     MAX_POSITION = 999999
     MAX_COLOR = 15
     MAX_OFFSET = 984984

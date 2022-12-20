@@ -59,9 +59,7 @@ contract OnchainPlace is IOnchainPlace, ERC721, Ownable {
         
     }
 
-    receive() external payable {
-        _mint(0);
-    }
+    receive() external payable {}
 
     /*
         @notice Set the color of a pixel in the place
@@ -96,9 +94,9 @@ contract OnchainPlace is IOnchainPlace, ERC721, Ownable {
     */
     function _mint(uint256 offset) internal {
         require(msg.value >= MINT_FEE);
-        require(_tokens[_totalSupply - 1].totalChanges != _totalChanges || _totalSupply == 0);
-        require(offset - ((offset / 1000) * 1000) <= PLACE_WIDTH - CHUNK_WIDTH);
+        require(_totalSupply == 0 || _tokens[_totalSupply - 1].totalChanges != _totalChanges);
         require(offset / 1000 <= PLACE_WIDTH - CHUNK_WIDTH);
+        require(offset - ((offset / 1000) * 1000) <= PLACE_WIDTH - CHUNK_WIDTH);
     
         _tokens[_totalSupply].totalChanges = _totalChanges;
 
