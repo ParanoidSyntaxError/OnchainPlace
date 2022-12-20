@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: Contract
-    network: mumbai
+    network: matic
     source:
-      address: "0xBCB77f974b9956f58380870c9e35a443507FE655"
+      address: "0xde160F39D38C3b6158A7D242bA3a8b9BFab5b02D"
       abi: Contract
-      startBlock: 28196475
+      startBlock: 37044714
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -18,10 +18,10 @@ dataSources:
         - Mint
       abis:
         - name: Contract
-          file: Contract\abis\Contract.json
+          file: Contract/abis/Contract.json
       eventHandlers:
         - event: PixelSet(indexed address,uint256,uint256,uint256)
           handler: handlePixelSet
         - event: Mint(indexed address,uint256,uint256)
           handler: handleMint
-      file: Contract\Contract.wasm
+      file: Contract/Contract.wasm

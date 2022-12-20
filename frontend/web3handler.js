@@ -1,4 +1,4 @@
-const contractAddress = "0xBCB77f974b9956f58380870c9e35a443507FE655";
+const contractAddress = "0xde160F39D38C3b6158A7D242bA3a8b9BFab5b02D";
 
 const contractAbi = [
 	{
@@ -558,7 +558,7 @@ const contractAbi = [
 	}
 ];
 
-const explorerPrefix = "https://mumbai.polygonscan.com/tx/";
+const explorerPrefix = "https://polygonscan.com/tx/";
 
 const connectButton = document.getElementById("btn-connect");
 connectButton.onclick = connect;
