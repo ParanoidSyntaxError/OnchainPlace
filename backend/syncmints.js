@@ -27,7 +27,11 @@ scheduler.scheduleJob('0 * * * * *', async function() {
     if(scheduleLock == false) {
         scheduleLock = true;
 
-        await checkMints();
+        try {
+            await checkMints();
+        } catch(e) {
+            console.log(new Date().toLocaleString() + " | sync mints ERROR! " + e.toString());
+        }
 
         scheduleLock = false;
     }

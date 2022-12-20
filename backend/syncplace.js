@@ -20,7 +20,11 @@ scheduler.scheduleJob('* * * * * *', async function() {
     if(scheduleLock == false) {
         scheduleLock = true;
 
-        await checkPlace();
+        try {
+            await checkPlace();
+        } catch(e) {
+            console.log(new Date().toLocaleString() + " | sync place ERROR! " + e.toString());
+        }
 
         scheduleLock = false;
     }
