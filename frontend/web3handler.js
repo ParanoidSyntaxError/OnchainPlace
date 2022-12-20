@@ -670,7 +670,7 @@ function checkConnection() {
 	if(signer == undefined) {
 		errorMessage(ErrorCode.NotConnected);
 		return false;
-	} else if(chainData.chainId != 80001) {
+	} else if(chainData.chainId != 137) {
 		errorMessage(ErrorCode.InvalidChainId);
 		return false;
 	}
