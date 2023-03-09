@@ -127,6 +127,23 @@
     border: 2px solid darkgrey;
     box-shadow: 2px 2px 0px black;
 }
+.canvas-cursor {
+    image-rendering: pixelated;
+    position:absolute;
+    pointer-events: none;
+    -webkit-animation: fadeinout 0.25s infinite alternate;
+    animation: fadeinout 0.25s infinite alternate;
+    opacity: 1;
+}
+
+@-webkit-keyframes fadeinout {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+@keyframes fadeinout {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
 
 .radio-toolbar {
     text-align: center;

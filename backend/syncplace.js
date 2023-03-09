@@ -16,7 +16,7 @@ const s3Client = new S3Client({
 
 let scheduleLock = false;
 
-scheduler.scheduleJob('* * * * * *', async function() {
+scheduler.scheduleJob('0 * * * * *', async function() {
     if(scheduleLock == false) {
         scheduleLock = true;
 

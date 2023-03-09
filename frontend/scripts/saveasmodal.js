@@ -1,4 +1,4 @@
-let canvas = document.getElementById("canvas-view");
+let canvas = document.getElementById("place-view");
 let saveasModal = document.getElementById("modal-saveas");
 let closeModal = document.getElementById("modal-close");
 

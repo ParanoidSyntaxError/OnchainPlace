@@ -3,10 +3,10 @@ document.getElementById("btn-refresh").onclick = refreshPlace;
 document.getElementById("btn-resetzoom").onclick = resetZoom;
 document.getElementById("btn-center").onclick = center;
 
-const pixelX = document.getElementById("input-x");
-const pixelY = document.getElementById("input-y");
-const offsetX = document.getElementById("input-offsetx");
-const offsetY = document.getElementById("input-offsety");
+let pixelX = document.getElementById("input-x");
+let pixelY = document.getElementById("input-y");
+let offsetX = document.getElementById("input-offsetx");
+let offsetY = document.getElementById("input-offsety");
 
 initialize();
 
