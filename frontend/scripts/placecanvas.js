@@ -3,11 +3,6 @@ let placeView = document.getElementById("place-view");
 let placeDataCtx = placeData.getContext("2d");
 let placeViewCtx = placeView.getContext("2d");
 
-let cursorData = document.getElementById("cursor-data");
-let cursorView = document.getElementById("cursor-view");
-let cursorDataCtx = cursorData.getContext("2d");
-let cursorViewCtx = cursorView.getContext("2d");
-
 const colors = [
     "ffffff", "e4e4e4", "888888", "222222",
     "ffa7d1", "e50000", "e59500", "a06a42",
@@ -24,9 +19,6 @@ const scrollSensitivity = 0.0005;
 let dragging = false;
 let drag = { x: 0, y: 0 };
 
-let lastMousePosition = { x: 0, y: 0 };
-let tempPixel;
-
 let initialPinchDistance = null;
 let lastScale = scale;
 
@@ -42,7 +34,7 @@ placeView.addEventListener('touchstart', (e) => handleTouch(e, onPointerDown))
 placeView.addEventListener('touchend',  (e) => handleTouch(e, onPointerUp))
 placeView.addEventListener('touchmove', (e) => handleTouch(e, onPointerMove))
 
-window.onresize = flexCanvasSize;
+window.onresize += flexCanvas;
 
 initializeCanvas();
 
@@ -52,56 +44,9 @@ function initializeCanvas() {
     placeView.width = 1000;
     placeView.height = 1000;
 
-    cursorData.width = 1000;
-    cursorData.height = 1000;
-    cursorView.width = 1000;
-    cursorView.height = 1000;
-
-    flexCanvasSize();
+    flexCanvas();
 
     clearCanvas();
-}
-
-function updateCursor() {
-    cursorDataCtx.clearRect(0, 0, cursorView.width, cursorView.height);
-
-    if(tempPixel != undefined) {
-        cursorDataCtx.fillStyle = tempPixel.color;
-        cursorDataCtx.fillRect(tempPixel.x, tempPixel.y, 1, 1);
-    }
-
-    if(lastMousePosition != undefined) {
-        cursorDataCtx.fillStyle = "black";
-        cursorDataCtx.fillRect(lastMousePosition.x, lastMousePosition.y, 1, 1);
-    }
-
-    if(lastMousePosition != undefined || tempPixel != undefined) {
-        placeViewCtx.imageSmoothingEnabled = false;
-
-        cursorViewCtx.clearRect(0, 0, cursorView.width, cursorView.height);
-        cursorViewCtx.drawImage(cursorData, 0, 0, cursorView.width, cursorView.height);
-    }
-}
-
-function setCursor(mouseEvent) {
-    const bb = cursorView.getBoundingClientRect();
-
-    const scaleOffset = (cursorData.width / 2) - ((cursorData.width / 2) / scale);
-    const dragOffset = {
-        x : (cursorData.width / bb.width) * canvasOffset.x,
-        y : (cursorData.height / bb.height) * canvasOffset.y
-    }
-
-    const x = Math.floor(((((mouseEvent.clientX - bb.left) / bb.width) * (cursorData.width / scale)) + scaleOffset) - dragOffset.x);
-    const y = Math.floor(((((mouseEvent.clientY - bb.top)/ bb.height) * (cursorData.height / scale)) + scaleOffset) - dragOffset.y);
-
-    pixelX.placeholder = x;
-    pixelY.placeholder = y;
-    offsetX.placeholder = x;
-    offsetY.placeholder = y;
-    lastMousePosition = { x: x, y: y }
-
-    updateCursor();
 }
 
 function setPlace(place, totalChanges) {
@@ -156,24 +101,19 @@ function clearCanvas() {
     placeDataCtx.resetTransform();
     placeViewCtx.clearRect(0, 0, placeView.width, placeView.height);
     placeViewCtx.resetTransform();
-
-    cursorDataCtx.clearRect(0, 0, cursorData.width, cursorData.height);
-    cursorDataCtx.resetTransform();
-    cursorViewCtx.clearRect(0, 0, cursorView.width, cursorView.height);
-    cursorViewCtx.resetTransform();
 }
 
 function center() {
     canvasOffset = { x: 0, y: 0 };
-    applyTransform();
+    applyCanvasTransform();
 }
 
 function resetZoom() {
     scale = 1;
-    applyTransform();
+    applyCanvasTransform();
 }
 
-function flexCanvasSize() {
+function flexCanvas() {
     const vw = parseInt(window.innerWidth);
     const vh = parseInt(window.innerHeight);
 
@@ -192,13 +132,10 @@ function flexCanvasSize() {
     placeView.width = rect.width;
     placeView.height = rect.height;
 
-    cursorView.width = rect.width;
-    cursorView.height = rect.height;
-
-    applyTransform();
+    applyCanvasTransform();
 }
 
-function applyTransform() {
+function applyCanvasTransform() {
     placeViewCtx.resetTransform();
     placeViewCtx.clearRect(0, 0, placeView.width, placeView.height);
     placeViewCtx.translate(placeView.width / 2, placeView.height / 2);
@@ -206,14 +143,6 @@ function applyTransform() {
     placeViewCtx.translate(-placeView.width / 2 + canvasOffset.x, -placeView.height / 2 + canvasOffset.y);
     placeViewCtx.imageSmoothingEnabled = false;
     placeViewCtx.drawImage(placeData, 0, 0, placeView.width, placeView.height);
-
-    cursorViewCtx.resetTransform();
-    cursorViewCtx.clearRect(0, 0, cursorView.width, cursorView.height);
-    cursorViewCtx.translate(cursorView.width / 2, cursorView.height / 2);
-    cursorViewCtx.scale(scale, scale);
-    cursorViewCtx.translate(-cursorView.width / 2 + canvasOffset.x, -cursorView.height / 2 + canvasOffset.y);
-    cursorViewCtx.imageSmoothingEnabled = false;
-    cursorViewCtx.drawImage(cursorData, 0, 0, cursorView.width, cursorView.height);
 }
 
 function adjustScale(amount, factor) {
@@ -233,7 +162,7 @@ function adjustScale(amount, factor) {
             scale = minScale;
         }
 
-        applyTransform();
+        applyCanvasTransform();
     }
 }
 
@@ -242,32 +171,14 @@ function onPointerMove(e) {
         canvasOffset.x = getEventLocation(e).x / scale - drag.x;
         canvasOffset.y = getEventLocation(e).y / scale - drag.y;
 
-        applyTransform();
+        applyCanvasTransform();
     }
-
-    setCursor(e);
 }
 
 function onPointerDown(e) {
     dragging = true;
     drag.x = getEventLocation(e).x / scale - canvasOffset.x;
     drag.y = getEventLocation(e).y / scale - canvasOffset.y;
-
-    pixelX.value = lastMousePosition.x;
-    pixelY.value = lastMousePosition.y;
-    offsetX.value = lastMousePosition.x;
-    offsetY.value = lastMousePosition.y;
-
-    try {
-        let color = parseInt(document.querySelector('input[name="colors"]:checked').value);
-        tempPixel = {
-            color: "#" + colors[color],
-            x: lastMousePosition.x,
-            y: lastMousePosition.y
-        };
-
-        updateCursor();
-    } catch {}
 }
 
 function onPointerUp(e) {
