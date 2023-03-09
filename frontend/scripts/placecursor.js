@@ -99,10 +99,6 @@ function onCursorMove(e) {
     updateCursor();
 }
 
-
-
-
-
 function updateCursor() {
     cursorDataCtx.clearRect(0, 0, cursorView.width, cursorView.height);
 
@@ -116,12 +112,7 @@ function updateCursor() {
         cursorDataCtx.fillRect(lastMousePosition.x, lastMousePosition.y, 1, 1);
     }
 
-    if(lastMousePosition != undefined || tempPixel != undefined) {
-        placeViewCtx.imageSmoothingEnabled = false;
-
-        cursorViewCtx.clearRect(0, 0, cursorView.width, cursorView.height);
-        cursorViewCtx.drawImage(cursorData, 0, 0, cursorView.width, cursorView.height);
-    }
+    applyCursorTransform();
 }
 
 function applyCursorTransform() {
