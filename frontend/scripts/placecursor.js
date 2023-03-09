@@ -55,7 +55,6 @@ function flexCursor() {
 }
 
 function onWheel() {
-    console.log(dragging)
     if(dragging == false) {
         applyCursorTransform();
     }
