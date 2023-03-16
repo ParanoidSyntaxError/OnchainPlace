@@ -150,9 +150,25 @@
             <button class="button" style="background-color: blue;" id="btn-setpixel">Set Pixel</button>
         </div>
 
+        <div id="modal-mint" class="mint-modal">
+            <div class="mint-modal-content">
+                <h id="modal-mint-close" class="mint-close">&times;</h>
+                <div class="mint-modal-header">
+                    <h>Mint preview</h>
+                </div>
+                <div class="mint-canvas-parent">
+                    <canvas id="mint-view" class="mint-canvas"></canvas>
+                </div>
+                <div style="margin: 10px 20px; text-align: right;">
+                    <button class="button" id="btn-mint-confirm" style="background-color: blue; margin-right: 10px;">Confirm</button>
+                    <button class="button" id="btn-mint-cancel" style="background-color: red;">Cancel</button>
+                </div>
+            </div>
+        </div>
+
         <div id="modal-saveas" class="saveas-modal">
             <div class="saveas-modal-content">
-                <h id="modal-close" class="saveas-close">&times;</h>
+                <h id="modal-saveas-close" class="saveas-close">&times;</h>
                 <div class="saveas-modal-header">
                     <h>UNAUTHORIZED RIGHT CLICK!</h>
                 </div>
@@ -171,7 +187,6 @@
     <script type="text/javascript" src="packages/fortmatic-2.4.0.js"></script>
 
     <script type="text/javascript" src="scripts/placecanvas.js"></script>    
-    <script type="text/javascript" src="../scripts/placecursor.js"></script>
     <script type="text/javascript" src="scripts/saveasmodal.js"></script>
     <script type="text/javascript" src="scripts/messagemodal.js"></script>
     <script type="text/javascript" src="scripts/loader.js"></script>
@@ -179,4 +194,7 @@
     <script type="text/javascript" src="scripts/queryplace.js"></script>
     
     <script type="text/javascript" src="home.js"></script>
+
+    <script type="text/javascript" src="scripts/placecursor.js"></script>
+    <script type="text/javascript" src="scripts/mintmodal.js"></script>
 </html>

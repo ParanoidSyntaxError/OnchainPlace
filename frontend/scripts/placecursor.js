@@ -10,7 +10,9 @@ placeView.addEventListener('wheel', onWheel);
 placeView.addEventListener('mousedown', onCursorDown);
 placeView.addEventListener('mousemove', onCursorMove);
 
-window.onresize += flexCursor;
+window.addEventListener('resize', function(event) {
+    flexCursor();
+}, true);
 
 initializeCursor();
 
@@ -87,8 +89,14 @@ function onCursorMove(e) {
         y : (cursorData.height / bb.height) * canvasOffset.y
     }
 
-    const x = Math.floor(((((e.clientX - bb.left) / bb.width) * (cursorData.width / scale)) + scaleOffset) - dragOffset.x);
-    const y = Math.floor(((((e.clientY - bb.top)/ bb.height) * (cursorData.height / scale)) + scaleOffset) - dragOffset.y);
+    let x = Math.floor(((((e.clientX - bb.left) / bb.width) * (cursorData.width / scale)) + scaleOffset) - dragOffset.x);
+    let y = Math.floor(((((e.clientY - bb.top)/ bb.height) * (cursorData.height / scale)) + scaleOffset) - dragOffset.y);
+    if(x < 0) {
+        x = 0;
+    }
+    if(y < 0) {
+        y = 0;
+    }
 
     pixelX.placeholder = x;
     pixelY.placeholder = y;
@@ -100,7 +108,7 @@ function onCursorMove(e) {
 }
 
 function updateCursor() {
-    cursorDataCtx.clearRect(0, 0, cursorView.width, cursorView.height);
+    cursorDataCtx.clearRect(0, 0, 1000, 1000);
 
     if(tempPixel != undefined) {
         cursorDataCtx.fillStyle = tempPixel.color;

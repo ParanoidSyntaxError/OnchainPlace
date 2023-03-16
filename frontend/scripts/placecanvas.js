@@ -34,11 +34,13 @@ placeView.addEventListener('touchstart', (e) => handleTouch(e, onPointerDown))
 placeView.addEventListener('touchend',  (e) => handleTouch(e, onPointerUp))
 placeView.addEventListener('touchmove', (e) => handleTouch(e, onPointerMove))
 
-window.onresize += flexCanvas;
+window.addEventListener('resize', function(event) {
+    flexCanvas();
+}, true);
 
-initializeCanvas();
+initializePlace();
 
-function initializeCanvas() {  
+function initializePlace() {  
     placeData.width = 1000;
     placeData.height = 1000;
     placeView.width = 1000;
@@ -97,9 +99,9 @@ function clearCanvas() {
     dragging = false;
     drag = { x: 0, y: 0 };
 
-    placeDataCtx.clearRect(0, 0, placeData.width, placeData.height);
+    placeDataCtx.clearRect(0, 0, 1000, 1000);
     placeDataCtx.resetTransform();
-    placeViewCtx.clearRect(0, 0, placeView.width, placeView.height);
+    placeViewCtx.clearRect(0, 0, 1000, 1000);
     placeViewCtx.resetTransform();
 }
 

@@ -1,19 +1,18 @@
-let canvas = document.getElementById("place-view");
 let saveasModal = document.getElementById("modal-saveas");
-let closeModal = document.getElementById("modal-close");
+let closeSaveasModal = document.getElementById("modal-saveas-close");
 
-canvas.addEventListener('contextmenu', function(ev) {
+placeView.addEventListener('contextmenu', function(ev) {
     ev.preventDefault();
     saveasModal.style.display = "block";
     return false;
 }, false);
     
-closeModal.onclick = function() {
+closeSaveasModal.onclick = function() {
     saveasModal.style.display = "none";
 }
 
-window.onclick = function(event) {
-    if (event.target == saveasModal) {
+window.addEventListener("click", function(e) {
+    if (e.target == saveasModal) {
         saveasModal.style.display = "none";
     }
-}
+});

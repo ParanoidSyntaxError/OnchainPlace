@@ -1,12 +1,19 @@
-document.getElementById("btn-refresh").onclick = refreshPlace;
+let refreshButton = document.getElementById("btn-refresh");
+refreshButton.addEventListener("click", refreshPlace);
 
-document.getElementById("btn-resetzoom").onclick = resetZoom;
-document.getElementById("btn-center").onclick = center;
+let resetZoomButton = document.getElementById("btn-resetzoom");
+resetZoomButton.addEventListener("click", resetZoom);
+
+let centerButton = document.getElementById("btn-center");
+centerButton.addEventListener("click", center);
 
 let pixelX = document.getElementById("input-x");
 let pixelY = document.getElementById("input-y");
 let offsetX = document.getElementById("input-offsetx");
 let offsetY = document.getElementById("input-offsety");
+
+let mintButton = document.getElementById("btn-mint");
+let setPixelButton = document.getElementById("btn-setpixel");
 
 initialize();
 
@@ -29,40 +36,7 @@ async function refreshPlace() {
     hideLoader();
 }
 
-document.getElementById("btn-mint").onclick = async function() {
-    showLoader();
-    trymint: try {
-        let x = parseInt(offsetX.value);
-        let y = parseInt(offsetY.value);
-    
-        if(isNaN(x) || isNaN(y)) {
-            errorMessage(ErrorCode.NoXY);
-            break trymint;
-        }
-    
-        if(x < 0) {
-            errorMessage(ErrorCode.M_XTooLow);
-            break trymint;
-        }
-        if(x > 985) {
-            errorMessage(ErrorCode.M_XTooHigh);
-             break trymint;
-        }
-        if(y < 0) {
-            errorMessage(ErrorCode.M_YTooLow);
-            break trymint;
-        }
-        if (y > 985) {
-            errorMessage(ErrorCode.M_YTooHigh);
-            break trymint;
-        }
-    
-        await mint(parseInt(x), parseInt(y));
-    } catch {}
-    hideLoader();
-};
-
-document.getElementById("btn-setpixel").onclick = async() => {
+setPixelButton.addEventListener("click", async() => {
     showLoader();
     trysetpixel: try {
         let color;
@@ -103,4 +77,4 @@ document.getElementById("btn-setpixel").onclick = async() => {
         refreshPlace();
     } catch {}
     hideLoader();
-};
+});

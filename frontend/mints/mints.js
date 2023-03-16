@@ -1,20 +1,23 @@
 document.getElementById("btn-search").onclick = searchMint;
 
-const idSearch = document.getElementById("input-mintid");
+let idSearch = document.getElementById("input-mintid");
 idSearch.addEventListener("keydown", function (e) {
     if(e.code == "Enter") {
         searchMint();
     }
 });
 
-document.getElementById("btn-resetzoom").onclick = resetZoom;
-document.getElementById("btn-center").onclick = center;
+let resetZoomButton = document.getElementById("btn-resetzoom");
+resetZoomButton.addEventListener("click", resetZoom);
 
-const mintId = document.getElementById("box-id");
-const mintChanges = document.getElementById("box-changes");
-const mintOwner = document.getElementById("box-owner");
+let centerButton = document.getElementById("btn-center");
+centerButton.addEventListener("click", center);
 
-const ownedParent = document.getElementById("div-ownedparent");
+let mintId = document.getElementById("box-id");
+let mintChanges = document.getElementById("box-changes");
+let mintOwner = document.getElementById("box-owner");
+
+let ownedParent = document.getElementById("div-ownedparent");
 
 initialize();
 
